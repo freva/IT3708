@@ -92,9 +92,9 @@ public class Sliders extends JPanel implements ChangeListener {
         if(slider == separationWeight) {
             Boid.setSeparationWeight(slider.getValue()*2);
         } else if(slider == alignmentWeight) {
-            Boid.setAlignmentWeight(slider.getValue()*8);
+            Boid.setAlignmentWeight(slider.getValue()*4);
         } else if(slider == cohesionWeight) {
-            Boid.setCohesionWeight(slider.getValue()/5000);
+            Boid.setCohesionWeight(slider.getValue()/50.0);
         }
     }
 }

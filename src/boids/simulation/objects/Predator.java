@@ -11,7 +11,7 @@ public class Predator extends Boid {
 
     public Predator(int x, int y) {
         super(x, y);
-        maxSpeed = 5;
+        maxSpeed = 6;
         separationRadius = 80;
     }
 

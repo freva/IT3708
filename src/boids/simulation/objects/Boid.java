@@ -8,11 +8,11 @@ import java.util.HashMap;
 public class Boid extends Entity {
     protected double angle = 0;
     protected Vector2D velocity = new Vector2D(5*Math.random() - 5, 5*Math.random() - 5);
-    private static double separationWeight = 100, alignmentWeight = 400, cohesionWeight = 0.01;
-    private static final double obstacleWeight = 250, predatorWeight = 500;
+    private static double separationWeight = 100, alignmentWeight = 200, cohesionWeight = 1;
+    private static final double obstacleWeight = 30, predatorWeight = 500;
     protected int maxSpeed = 5;
 
-    protected int cohesionRadius = 60, separationRadius = 12, alignmentRadius = 30, obstacleRadius = 30, predatorRadius = 60;
+    protected int cohesionRadius = 40, separationRadius = 12, alignmentRadius = 30, obstacleRadius = 30, predatorRadius = 60;
 
     public Boid(int x, int y) {
         super(x, y);
@@ -89,20 +89,19 @@ public class Boid extends Entity {
 
 
     protected Vector2D getCohesionVector(HashMap<Entity, Double> distances) {
-        int sumX=0, sumY=0;
-        double distSum = 0;
+        int sumX=0, sumY=0, numBoids = 0;
 
         for(Entity entity: distances.keySet()) {
             if(entity instanceof Boid && !(entity instanceof Predator)) {
                 double dist = distances.get(entity);
                 if(dist > cohesionRadius) continue;
-                sumX += entity.getX()/dist;
-                sumY += entity.getY()/dist;
-                distSum += dist;
+                sumX += entity.getX();
+                sumY += entity.getY();
+                numBoids++;
             }
         }
 
-        if(distSum > 0) return new Vector2D(sumX/distSum, sumY/distSum);
+        if(numBoids > 0) return new Vector2D(sumX/numBoids - x, sumY/numBoids - y);
         else return new Vector2D(0, 0);
     }
 
@@ -114,8 +113,8 @@ public class Boid extends Entity {
             if(entity instanceof Obstacle) {
                 double dist = distances.get(entity);
                 if(dist > obstacleRadius) continue;
-                sumX += (x-entity.getX())/dist;
-                sumY += (y-entity.getY())/dist;
+                sumX += (x-entity.getX())/(Math.max(dist, 10) - 9.5);
+                sumY += (y-entity.getY())/(Math.max(dist, 10) - 9.5);
             }
         }
         return new Vector2D(sumX, sumY);
