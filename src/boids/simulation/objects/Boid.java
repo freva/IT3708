@@ -69,7 +69,7 @@ public class Boid extends Entity {
     }
 
 
-    private Vector2D getAlignmentVector(HashMap<Entity, Double> distances) {
+    protected Vector2D getAlignmentVector(HashMap<Entity, Double> distances) {
         double angleSum = 0;
         int numBoids = 0;
 
@@ -106,7 +106,7 @@ public class Boid extends Entity {
     }
 
 
-    private Vector2D getObstacleVector(HashMap<Entity, Double> distances) {
+    protected Vector2D getObstacleVector(HashMap<Entity, Double> distances) {
         double sumX=0, sumY=0;
 
         for(Entity entity: distances.keySet()) {
@@ -121,7 +121,7 @@ public class Boid extends Entity {
     }
 
 
-    private Vector2D getPredatorVector(HashMap<Entity, Double> distances) {
+    protected Vector2D getPredatorVector(HashMap<Entity, Double> distances) {
         double sumX=0, sumY=0;
 
         for(Entity entity: distances.keySet()) {

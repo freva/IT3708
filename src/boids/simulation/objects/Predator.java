@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class Predator extends Boid {
-    protected double cohesionWeight = -20;
+    protected double separationWeight = -20, predatorWeight = 50;
 
 
     public Predator(int x, int y) {
@@ -17,8 +17,9 @@ public class Predator extends Boid {
 
     @Override
     public void tick(HashMap<Entity, Double> distances) {
-        Vector2D separationVector = getSeparationVector(distances).scale(cohesionWeight);
-        accelerate(separationVector);
+        Vector2D separationVector = getSeparationVector(distances).scale(separationWeight);
+        Vector2D predatorVector = getPredatorVector(distances).scale(predatorWeight);
+        accelerate(separationVector.sum(predatorVector));
         move(velocity);
     }
 
