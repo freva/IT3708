@@ -8,11 +8,11 @@ import java.util.HashMap;
 
 public class Boid extends Entity {
     protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
-    private static double separationWeight = 0.6, alignmentWeight = 0.3, cohesionWeight = 0.005;
-    private static final double obstacleWeight = 1, predatorWeight = 5;
+    private static double separationWeight = 0.4, alignmentWeight = 0.1, cohesionWeight = 0.008;
+    private static final double obstacleWeight = 0.5, predatorWeight = 5;
     protected int maxSpeed = 5;
 
-    protected int cohesionRadius = 60, separationRadius = 25, alignmentRadius = 50, obstacleRadius = 30, predatorRadius = 60;
+    protected int cohesionRadius = 55, separationRadius = 20, alignmentRadius = 50, obstacleRadius = 30, predatorRadius = 60;
 
 
     @Override
@@ -22,8 +22,6 @@ public class Boid extends Entity {
         Vector2D cohesionVector = getCohesionVector(distances).scale(cohesionWeight);
         Vector2D obstacleVector = getObstacleVector(distances).scale(obstacleWeight);
         Vector2D predatorVector = getPredatorVector(distances).scale(predatorWeight);
-
-        //if(id == 0) System.out.println(separationVector + " " + alignmentVector + " " + cohesionVector);
 
         accelerate(separationVector.sum(alignmentVector).sum(cohesionVector).sum(obstacleVector).sum(predatorVector));
     }
@@ -58,8 +56,8 @@ public class Boid extends Entity {
                 double dist = distances.get(entity);
                 if(dist > separationRadius) continue;
 
-                sumX += (x-entity.getX())/dist;
-                sumY += (y-entity.getY())/dist;
+                sumX += (x-entity.getX())/(Math.max(dist, 10) - 9);
+                sumY += (y-entity.getY())/(Math.max(dist, 10) - 9);
                 numBoids++;
             }
         }
