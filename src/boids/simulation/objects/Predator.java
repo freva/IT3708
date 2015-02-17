@@ -19,7 +19,6 @@ public class Predator extends Boid {
         Vector2D separationVector = getSeparationVector(distances).scale(separationWeight);
         Vector2D predatorVector = getPredatorVector(distances).scale(predatorWeight);
         accelerate(separationVector.sum(predatorVector));
-        move(velocity);
     }
 
 

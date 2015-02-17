@@ -27,4 +27,5 @@ public abstract class Entity {
 
     public abstract void tick(HashMap<Entity, Double> distances);
     public abstract void draw(Graphics g);
+    public abstract void move();
 }

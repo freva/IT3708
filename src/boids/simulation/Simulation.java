@@ -35,12 +35,9 @@ public class Simulation extends JPanel {
         while(true) {
             long time = System.currentTimeMillis();
 
-            synchronized (entities) {
-                entitiesCopy = entities.toArray(new Entity[entities.size()]);
-            }
+            entitiesCopy = entities.toArray(new Entity[entities.size()]);
 
             HashMap<Entity, HashMap<Entity, Double>> distanceMatrix = new HashMap<>();
-
             for(Entity e: entitiesCopy) distanceMatrix.put(e, new HashMap<>());
 
             for(int i=0; i<entitiesCopy.length; i++) {
@@ -52,6 +49,7 @@ public class Simulation extends JPanel {
             }
 
             Arrays.stream(entitiesCopy).parallel().forEach(b -> b.tick(distanceMatrix.get(b)));
+            Arrays.stream(entitiesCopy).parallel().forEach(Entity::move);
 
             try {
                 long sleepTime = 40 - (System.currentTimeMillis()-time);

@@ -7,9 +7,9 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class Boid extends Entity {
-    protected Vector2D velocity = new Vector2D(5*Math.random() - 5, 5*Math.random() - 5);
+    protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
     private static double separationWeight = 2, alignmentWeight = 0.5, cohesionWeight = 0.01;
-    private static final double obstacleWeight = 1.5, predatorWeight = 5;
+    private static final double obstacleWeight = 1, predatorWeight = 5;
     protected int maxSpeed = 5;
 
     protected int cohesionRadius = 60, separationRadius = 15, alignmentRadius = 40, obstacleRadius = 30, predatorRadius = 60;
@@ -23,8 +23,9 @@ public class Boid extends Entity {
         Vector2D obstacleVector = getObstacleVector(distances).scale(obstacleWeight);
         Vector2D predatorVector = getPredatorVector(distances).scale(predatorWeight);
 
+        //if(id == 0) System.out.println(separationVector + " " + alignmentVector + " " + cohesionVector);
+
         accelerate(separationVector.sum(alignmentVector).sum(cohesionVector).sum(obstacleVector).sum(predatorVector));
-        move(velocity);
     }
 
 
@@ -37,7 +38,7 @@ public class Boid extends Entity {
     }
 
 
-    public void move(Vector2D velocity) {
+    public void move() {
         this.x = modulo((int) (this.x + velocity.getX()), Main.SIMULATION_WIDTH);
         this.y = modulo((int) (this.y + velocity.getY()), Main.SIMULATION_HEIGHT);
     }
@@ -112,8 +113,8 @@ public class Boid extends Entity {
             if(entity instanceof Obstacle) {
                 double dist = distances.get(entity);
                 if(dist > obstacleRadius) continue;
-                sumX += (x-entity.getX())/(Math.max(dist, 10) - 9.8);
-                sumY += (y-entity.getY())/(Math.max(dist, 10) - 9.8);
+                sumX += (x-entity.getX())/(Math.max(dist, 14) - 13);
+                sumY += (y-entity.getY())/(Math.max(dist, 14) - 13);
             }
         }
         return new Vector2D(sumX, sumY);

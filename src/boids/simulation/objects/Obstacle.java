@@ -12,4 +12,7 @@ public class Obstacle extends Entity {
         g.setColor(Color.black);
         g.fillOval((int) getX() - 8, (int) getY() - 8, 15, 15);
     }
+
+    @Override
+    public void move() { }
 }
