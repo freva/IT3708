@@ -25,7 +25,7 @@ public class Sliders extends JPanel implements ChangeListener {
         gbc_separationLabel.gridy = 0;
         add(separationLabel, gbc_separationLabel);
 
-        separationWeight = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        separationWeight = new JSlider(JSlider.HORIZONTAL, 0, 100, 20);
         separationWeight.addChangeListener(this);
         separationWeight.setName("separation");
         separationWeight.setMajorTickSpacing(20);
@@ -48,7 +48,7 @@ public class Sliders extends JPanel implements ChangeListener {
         gbc_alignmentLabel.gridy = 3;
         add(alignmentLabel, gbc_alignmentLabel);
 
-        alignmentWeight = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        alignmentWeight = new JSlider(JSlider.HORIZONTAL, 0, 100, 20);
         alignmentWeight.addChangeListener(this);
         alignmentWeight.setMajorTickSpacing(20);
         alignmentWeight.setMinorTickSpacing(5);
@@ -70,7 +70,7 @@ public class Sliders extends JPanel implements ChangeListener {
         gbc_cohesionLabel.gridy = 6;
         add(cohesionLabel, gbc_cohesionLabel);
 
-        cohesionWeight = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        cohesionWeight = new JSlider(JSlider.HORIZONTAL, 0, 100, 20);
         cohesionWeight.addChangeListener(this);
         cohesionWeight.setMajorTickSpacing(20);
         cohesionWeight.setMinorTickSpacing(5);
@@ -90,11 +90,11 @@ public class Sliders extends JPanel implements ChangeListener {
         JSlider slider = (JSlider) e.getSource();
 
         if(slider == separationWeight) {
-            Boid.setSeparationWeight(slider.getValue()/25.0);
+            Boid.setSeparationWeight(slider.getValue()/33.3);
         } else if(slider == alignmentWeight) {
-            Boid.setAlignmentWeight(slider.getValue()/100.0);
+            Boid.setAlignmentWeight(slider.getValue()/66.7);
         } else if(slider == cohesionWeight) {
-            Boid.setCohesionWeight(slider.getValue()/5000.0);
+            Boid.setCohesionWeight(slider.getValue()/4000.0);
         }
     }
 }

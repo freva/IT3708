@@ -8,11 +8,11 @@ import java.util.HashMap;
 
 public class Boid extends Entity {
     protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
-    private static double separationWeight = 2, alignmentWeight = 0.5, cohesionWeight = 0.01;
+    private static double separationWeight = 0.6, alignmentWeight = 0.3, cohesionWeight = 0.005;
     private static final double obstacleWeight = 1, predatorWeight = 5;
     protected int maxSpeed = 5;
 
-    protected int cohesionRadius = 60, separationRadius = 15, alignmentRadius = 40, obstacleRadius = 30, predatorRadius = 60;
+    protected int cohesionRadius = 60, separationRadius = 25, alignmentRadius = 50, obstacleRadius = 30, predatorRadius = 60;
 
 
     @Override
