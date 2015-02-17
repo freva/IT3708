@@ -7,17 +7,12 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class Boid extends Entity {
-    protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
+    protected Vector2D velocity = new Vector2D(5*Math.random() - 5, 5*Math.random() - 5);
     private static double separationWeight = 2, alignmentWeight = 0.5, cohesionWeight = 0.01;
     private static final double obstacleWeight = 1.5, predatorWeight = 5;
     protected int maxSpeed = 5;
 
     protected int cohesionRadius = 60, separationRadius = 15, alignmentRadius = 40, obstacleRadius = 30, predatorRadius = 60;
-
-    public Boid(int x, int y) {
-        super(x, y);
-        move(velocity);
-    }
 
 
     @Override

@@ -1,6 +1,5 @@
 package boids.simulation;
 
-import boids.Main;
 import boids.simulation.objects.Boid;
 import boids.simulation.objects.Entity;
 import boids.simulation.objects.Obstacle;
@@ -9,6 +8,7 @@ import boids.simulation.objects.Predator;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Simulation extends JPanel {
@@ -19,8 +19,8 @@ public class Simulation extends JPanel {
     private Simulation() {
         setBackground(Color.white);
 
-        for(int i=0; i<400; i++) {
-            addEntity(new Boid((int) (Math.random()* Main.SIMULATION_WIDTH), (int) (Math.random()*Main.SIMULATION_HEIGHT)));
+        for(int i=0; i<250; i++) {
+            addEntity(new Boid());
         }
     }
 
@@ -31,27 +31,27 @@ public class Simulation extends JPanel {
 
 
     public void run() {
-        ArrayList<Entity> entitiesCopy;
+        Entity entitiesCopy[];
         while(true) {
             long time = System.currentTimeMillis();
 
             synchronized (entities) {
-                entitiesCopy = (ArrayList<Entity>) entities.clone();
+                entitiesCopy = entities.toArray(new Entity[entities.size()]);
             }
 
             HashMap<Entity, HashMap<Entity, Double>> distanceMatrix = new HashMap<>();
 
             for(Entity e: entitiesCopy) distanceMatrix.put(e, new HashMap<>());
 
-            for(int i=0; i<entitiesCopy.size(); i++) {
-                for(int j=i+1; j<entitiesCopy.size(); j++) {
-                    double dist = entitiesCopy.get(i).distanceTo(entitiesCopy.get(j));
-                    distanceMatrix.get(entitiesCopy.get(i)).put(entitiesCopy.get(j), dist);
-                    distanceMatrix.get(entitiesCopy.get(j)).put(entitiesCopy.get(i), dist);
+            for(int i=0; i<entitiesCopy.length; i++) {
+                for(int j=i+1; j<entitiesCopy.length; j++) {
+                    double dist = entitiesCopy[i].distanceTo(entitiesCopy[j]);
+                    distanceMatrix.get(entitiesCopy[i]).put(entitiesCopy[j], dist);
+                    distanceMatrix.get(entitiesCopy[j]).put(entitiesCopy[i], dist);
                 }
             }
 
-            entitiesCopy.parallelStream().forEach(b -> b.tick(distanceMatrix.get(b)));
+            Arrays.stream(entitiesCopy).parallel().forEach(b -> b.tick(distanceMatrix.get(b)));
 
             try {
                 long sleepTime = 40 - (System.currentTimeMillis()-time);
@@ -79,7 +79,7 @@ public class Simulation extends JPanel {
 
 
     public void addObstacle() {
-        addEntity(new Obstacle((int) (Math.random() * Main.SIMULATION_WIDTH), (int) (Math.random() * Main.SIMULATION_HEIGHT)));
+        addEntity(new Obstacle());
     }
 
     public synchronized void removeObstacles() {
@@ -90,7 +90,7 @@ public class Simulation extends JPanel {
 
 
     public void addPredator() {
-        addEntity(new Predator((int) (Math.random() * Main.SIMULATION_WIDTH), (int) (Math.random() * Main.SIMULATION_HEIGHT)));
+        addEntity(new Predator());
     }
 
     public synchronized void removePredators() {

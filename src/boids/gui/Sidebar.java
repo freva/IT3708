@@ -13,7 +13,7 @@ public class Sidebar extends JPanel implements ActionListener {
     public Sidebar() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[]{180};
-        gridBagLayout.rowHeights = new int[]{40, 220, 40, 40, 40, 40, 200};
+        gridBagLayout.rowHeights = new int[]{40, 220, 40, 40, 40, 40, 160};
         setBackground(Color.gray);
         setLayout(gridBagLayout);
 

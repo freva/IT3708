@@ -7,8 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main {
-    public static final int APP_WIDTH = 980, APP_HEIGHT = 720;
-    public static final int SIMULATION_WIDTH = 810, SIMULATION_HEIGHT = 720;
+    public static final int APP_WIDTH = 980, APP_HEIGHT = 680;
+    public static final int SIMULATION_WIDTH = 810, SIMULATION_HEIGHT = APP_HEIGHT;
 
 
     public static void main(String[] args) {

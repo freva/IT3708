@@ -1,14 +1,16 @@
 package boids.simulation.objects;
 
+import boids.Main;
+
 import java.awt.*;
 import java.util.HashMap;
 
 public abstract class Entity {
     protected double x, y;
 
-    protected Entity(double x, double y) {
-        this.x = x;
-        this.y = y;
+    protected Entity() {
+        this.x = Math.random() * Main.SIMULATION_WIDTH;
+        this.y = Math.random() * Main.SIMULATION_HEIGHT;
     }
 
     public double distanceTo(Entity other) {

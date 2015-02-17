@@ -9,8 +9,7 @@ public class Predator extends Boid {
     protected double separationWeight = -20, predatorWeight = 50;
 
 
-    public Predator(int x, int y) {
-        super(x, y);
+    public Predator() {
         maxSpeed = 6;
         separationRadius = 80;
     }
