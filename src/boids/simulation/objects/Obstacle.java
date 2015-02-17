@@ -13,6 +13,6 @@ public class Obstacle extends Entity {
 
     public void draw(Graphics g) {
         g.setColor(Color.black);
-        g.fillOval(getX()-8, getY()-8, 15, 15);
+        g.fillOval((int) getX() - 8, (int) getY() - 8, 15, 15);
     }
 }

@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Boid extends Entity {
     protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
-    private static double separationWeight = 1, alignmentWeight = 0.5, cohesionWeight = 0.01;
+    private static double separationWeight = 2, alignmentWeight = 0.5, cohesionWeight = 0.01;
     private static final double obstacleWeight = 5, predatorWeight = 50;
     protected int maxSpeed = 5;
 
@@ -35,10 +35,10 @@ public class Boid extends Entity {
 
     public void draw(Graphics g) {
         g.setColor(Color.green);
-        g.fillOval(getX()-6, getY()-6, 11, 11);
+        g.fillOval((int) getX()-6, (int) getY()-6, 11, 11);
 
         g.setColor(Color.black);
-        g.drawLine(getX(), getY(), getX() + (int) (1.2*velocity.getX()), getY() + (int) (1.2*velocity.getY()));
+        g.drawLine((int) getX(), (int) getY(), (int) (getX() + 1.2*velocity.getX()), (int) (getY() + 1.2*velocity.getY()));
     }
 
 
@@ -55,6 +55,7 @@ public class Boid extends Entity {
 
     protected Vector2D getSeparationVector(HashMap<Entity, Double> distances) {
         double sumX=0, sumY=0;
+        int numBoids = 0;
 
         for(Entity entity: distances.keySet()) {
             if(entity instanceof Boid && !(entity instanceof Predator)) {
@@ -63,9 +64,12 @@ public class Boid extends Entity {
 
                 sumX += (x-entity.getX())/dist;
                 sumY += (y-entity.getY())/dist;
+                numBoids++;
             }
         }
-        return new Vector2D(sumX, sumY);
+
+        if(numBoids > 0) return new Vector2D(sumX/numBoids, sumY/numBoids);
+        else return new Vector2D(0, 0);
     }
 
 
@@ -88,7 +92,8 @@ public class Boid extends Entity {
 
 
     protected Vector2D getCohesionVector(HashMap<Entity, Double> distances) {
-        int sumX=0, sumY=0, numBoids = 0;
+        double sumX = 0, sumY = 0;
+        int numBoids = 0;
 
         for(Entity entity: distances.keySet()) {
             if(entity instanceof Boid && !(entity instanceof Predator)) {

@@ -26,9 +26,9 @@ public class Predator extends Boid {
 
     public void draw(Graphics g) {
         g.setColor(Color.red);
-        g.fillOval(getX() - 6, getY() - 6, 11, 11);
+        g.fillOval((int) getX() - 6, (int) getY() - 6, 11, 11);
 
         g.setColor(Color.black);
-        g.drawLine(getX(), getY(), getX() + (int) (1.2*velocity.getX()), getY() + (int) (1.2*velocity.getY()));
+        g.drawLine((int) getX(), (int) getY(), (int) (getX() + 1.2*velocity.getX()), (int) (getY() + 1.2*velocity.getY()));
     }
 }

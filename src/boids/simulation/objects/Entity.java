@@ -15,12 +15,12 @@ public abstract class Entity {
         return Math.sqrt(Math.pow(x-other.getX(), 2) + Math.pow(y-other.getY(), 2)) + 0.01;
     }
 
-    public int getX() {
-        return (int) x;
+    public double getX() {
+        return x;
     }
 
-    public int getY() {
-        return (int) y;
+    public double getY() {
+        return y;
     }
 
     public abstract void tick(HashMap<Entity, Double> distances);
