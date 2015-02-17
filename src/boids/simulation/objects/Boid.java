@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Boid extends Entity {
     protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
     private static double separationWeight = 2, alignmentWeight = 0.5, cohesionWeight = 0.01;
-    private static final double obstacleWeight = 5, predatorWeight = 50;
+    private static final double obstacleWeight = 1.5, predatorWeight = 5;
     protected int maxSpeed = 5;
 
     protected int cohesionRadius = 60, separationRadius = 15, alignmentRadius = 40, obstacleRadius = 30, predatorRadius = 60;
@@ -117,8 +117,8 @@ public class Boid extends Entity {
             if(entity instanceof Obstacle) {
                 double dist = distances.get(entity);
                 if(dist > obstacleRadius) continue;
-                sumX += (x-entity.getX())/(Math.max(dist, 10) - 9.5);
-                sumY += (y-entity.getY())/(Math.max(dist, 10) - 9.5);
+                sumX += (x-entity.getX())/(Math.max(dist, 10) - 9.8);
+                sumY += (y-entity.getY())/(Math.max(dist, 10) - 9.8);
             }
         }
         return new Vector2D(sumX, sumY);
