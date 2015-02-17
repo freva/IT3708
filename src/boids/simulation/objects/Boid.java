@@ -1,27 +1,22 @@
 package boids.simulation.objects;
 
+import boids.Main;
 import boids.simulation.Vector2D;
 
 import java.awt.*;
 import java.util.HashMap;
 
 public class Boid extends Entity {
-    protected double angle = 0;
-    protected Vector2D velocity = new Vector2D(5*Math.random() - 5, 5*Math.random() - 5);
-    private static double separationWeight = 100, alignmentWeight = 200, cohesionWeight = 1;
-    private static final double obstacleWeight = 30, predatorWeight = 500;
+    protected Vector2D velocity = new Vector2D(5*Math.random() - 2.5, 5*Math.random() - 2.5);
+    private static double separationWeight = 1, alignmentWeight = 0.5, cohesionWeight = 0.01;
+    private static final double obstacleWeight = 5, predatorWeight = 50;
     protected int maxSpeed = 5;
 
-    protected int cohesionRadius = 40, separationRadius = 12, alignmentRadius = 30, obstacleRadius = 30, predatorRadius = 60;
+    protected int cohesionRadius = 60, separationRadius = 15, alignmentRadius = 40, obstacleRadius = 30, predatorRadius = 60;
 
     public Boid(int x, int y) {
         super(x, y);
         move(velocity);
-    }
-
-
-    public double getAngle() {
-        return angle;
     }
 
 
@@ -43,21 +38,26 @@ public class Boid extends Entity {
         g.fillOval(getX()-6, getY()-6, 11, 11);
 
         g.setColor(Color.black);
-        g.drawLine(getX(), getY(), getX() + (int) (7*Math.cos(angle)), getY() + (int) (7*Math.sin(angle)));
+        g.drawLine(getX(), getY(), getX() + (int) (1.2*velocity.getX()), getY() + (int) (1.2*velocity.getY()));
     }
 
 
-    @Override
     public void move(Vector2D velocity) {
-        super.move(velocity);
-        angle = Math.atan2(velocity.getY(), velocity.getX());
+        this.x = modulo((int) (this.x + velocity.getX()), Main.SIMULATION_WIDTH);
+        this.y = modulo((int) (this.y + velocity.getY()), Main.SIMULATION_HEIGHT);
     }
+
+
+    public Vector2D getVelocity() {
+        return velocity;
+    }
+
 
     protected Vector2D getSeparationVector(HashMap<Entity, Double> distances) {
         double sumX=0, sumY=0;
 
         for(Entity entity: distances.keySet()) {
-            if(entity instanceof Boid) {
+            if(entity instanceof Boid && !(entity instanceof Predator)) {
                 double dist = distances.get(entity);
                 if(dist > separationRadius) continue;
 
@@ -70,21 +70,20 @@ public class Boid extends Entity {
 
 
     protected Vector2D getAlignmentVector(HashMap<Entity, Double> distances) {
-        double angleSum = 0;
+        double sumX = 0, sumY = 0;
         int numBoids = 0;
 
         for(Entity entity: distances.keySet()) {
             if(entity instanceof Boid) {
                 if(distances.get(entity) > alignmentRadius) continue;
-                angleSum += ((Boid) entity).getAngle();
+                sumX += ((Boid) entity).getVelocity().getX();
+                sumY += ((Boid) entity).getVelocity().getY();
                 numBoids++;
             }
         }
 
-        if(numBoids > 0) {
-            angleSum /= numBoids;
-            return new Vector2D(Math.cos(angleSum), Math.sin(angleSum));
-        } else return new Vector2D(0, 0);
+        if(numBoids > 0) return new Vector2D(sumX/numBoids, sumY/numBoids);
+        else return new Vector2D(0, 0);
     }
 
 
@@ -156,5 +155,11 @@ public class Boid extends Entity {
 
     public static void setCohesionWeight(double cohesionWeight) {
         Boid.cohesionWeight = cohesionWeight;
+    }
+
+
+
+    private static int modulo(int n, int m) {
+        return (n < 0) ? (m - (Math.abs(n) % m) ) %m : (n % m);
     }
 }

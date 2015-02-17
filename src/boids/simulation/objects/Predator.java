@@ -29,6 +29,6 @@ public class Predator extends Boid {
         g.fillOval(getX() - 6, getY() - 6, 11, 11);
 
         g.setColor(Color.black);
-        g.drawLine(getX(), getY(), getX() + (int) (7 * Math.cos(angle)), getY() + (int) (7 * Math.sin(angle)));
+        g.drawLine(getX(), getY(), getX() + (int) (1.2*velocity.getX()), getY() + (int) (1.2*velocity.getY()));
     }
 }

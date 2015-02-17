@@ -1,8 +1,5 @@
 package boids.simulation.objects;
 
-import boids.Main;
-import boids.simulation.Vector2D;
-
 import java.awt.*;
 import java.util.HashMap;
 
@@ -24,15 +21,6 @@ public abstract class Entity {
 
     public int getY() {
         return (int) y;
-    }
-
-    public void move(Vector2D v) {
-        this.x = modulo((int) (this.x + v.getX()), Main.SIMULATION_WIDTH);
-        this.y = modulo((int) (this.y + v.getY()), Main.SIMULATION_HEIGHT);
-    }
-
-    private int modulo(int n, int m) {
-        return (n < 0) ? (m - (Math.abs(n) % m) ) %m : (n % m);
     }
 
     public abstract void tick(HashMap<Entity, Double> distances);

@@ -90,11 +90,11 @@ public class Sliders extends JPanel implements ChangeListener {
         JSlider slider = (JSlider) e.getSource();
 
         if(slider == separationWeight) {
-            Boid.setSeparationWeight(slider.getValue()*2);
+            Boid.setSeparationWeight(slider.getValue()/50.0);
         } else if(slider == alignmentWeight) {
-            Boid.setAlignmentWeight(slider.getValue()*4);
+            Boid.setAlignmentWeight(slider.getValue()/100.0);
         } else if(slider == cohesionWeight) {
-            Boid.setCohesionWeight(slider.getValue()/50.0);
+            Boid.setCohesionWeight(slider.getValue()/5000.0);
         }
     }
 }
