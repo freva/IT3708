@@ -2,7 +2,7 @@ package EA.generic;
 
 import java.util.ArrayList;
 
-public abstract class Genotype<T> {
+public abstract class Genotype<T> implements Comparable<T> {
 
     public abstract ArrayList<T> developmentalMethod();
 
