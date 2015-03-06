@@ -16,16 +16,20 @@ public class Simulation extends JPanel {
     private final ArrayList<Entity> entities = new ArrayList<>();
 
 
-    private Simulation() {
+    private Simulation(int numBoids) {
         setBackground(Color.white);
 
-        for(int i=0; i<250; i++) {
+        for(int i=0; i<numBoids; i++) {
             addEntity(new Boid());
         }
     }
 
+    public static Simulation createSimulation(int numBouds) {
+        simulation = new Simulation(numBouds);
+        return simulation;
+    }
+
     public static Simulation getSimulation() {
-        if(simulation == null) simulation = new Simulation();
         return simulation;
     }
 

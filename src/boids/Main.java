@@ -12,6 +12,7 @@ public class Main {
 
 
     public static void main(String[] args) {
+        Simulation.createSimulation(Integer.parseInt(args[0]));
         new Main();
         Simulation.getSimulation().run();
     }
