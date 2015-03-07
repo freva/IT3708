@@ -26,11 +26,12 @@ public class EA {
     }
 
 
-    public void runGeneration() {
+    public boolean runGeneration() {
         selectSurvivingAdults();
         generateTheNextGeneration();
 
         generation++;
+        return Collections.max(adults).isFinished();
     }
 
 

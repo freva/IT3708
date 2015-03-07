@@ -11,15 +11,17 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
+        long max = (1<<20) - 1;
 
         for(int i=1; i<11; i++) {
-            init.add(new GenoPhenom((1L<<i) - 1, 20));
+            init.add(new GenoPhenom((long) (Math.random()*max), 20));
         }
 
-        EA ea = new EA(AdultSelection.MIXING, ParentSelection.FITNESS_PROPORTIONATE, 20, 0.3, 0.4, init);
+        EA ea = new EA(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 20, 0.3, 0.4, init);
+        boolean isFinished = false;
 
-        for(int i=0; i<200; i++) {
-            ea.runGeneration();
+        while(!isFinished) {
+            isFinished = ea.runGeneration();
             System.out.println(ea);
         }
     }
