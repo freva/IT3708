@@ -16,6 +16,8 @@ public abstract class GenericGenoPhenom<T1, T2> implements Comparable<GenericGen
 
     public abstract double fitnessEvaluation();
 
+    public abstract boolean isFinished();
+
 
     public T1 getGeno() {
         return geno;

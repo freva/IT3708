@@ -2,13 +2,14 @@ package EA.generic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 public class EA {
     private static final double tournamentEpsilon = 0.1;
     private static final int tournamentK = 5;
 
-    private ArrayList<GenericGenoPhenom> adults, children;
+    private List<GenericGenoPhenom> adults = new ArrayList<>(), children;
     private int populationSize, generation = 1;
     private double crossoverRate, mutationRate;
     private AdultSelection adultSelection;
@@ -37,14 +38,14 @@ public class EA {
         children = new ArrayList<>();
 
         int numToCrossover = 2 * (int) (adults.size()*crossoverRate);
-        ArrayList<GenericGenoPhenom> toCrossover = selectParents(parentSelection, adults, numToCrossover);
+        List<GenericGenoPhenom> toCrossover = selectParents(parentSelection, adults, numToCrossover);
         for(int i=0; i<numToCrossover; i+=2) {
             children.add(toCrossover.get(i).crossover(toCrossover.get(i+1)));
             children.add(toCrossover.get(i+1).crossover(toCrossover.get(i)));
         }
 
         int numToMutate = (int) (adults.size()*mutationRate);
-        ArrayList<GenericGenoPhenom> toMutate = selectParents(parentSelection, adults, numToMutate);
+        List<GenericGenoPhenom> toMutate = selectParents(parentSelection, adults, numToMutate);
         for(int i=0; i<numToMutate; i++) {
             children.add(toMutate.get(i).mutate());
         }
@@ -59,21 +60,33 @@ public class EA {
 
             case OVER_PRODUCTION:
                 Collections.sort(children);
-                adults = (ArrayList<GenericGenoPhenom>) children.subList(Math.max(children.size() - populationSize, 0), children.size());
+                adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
                 break;
 
             case MIXING:
                 children.addAll(adults);
                 Collections.sort(children);
-                adults = (ArrayList<GenericGenoPhenom>) children.subList(Math.max(children.size() - populationSize, 0), children.size());
+                adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
                 break;
         }
 
     }
 
 
-    public static ArrayList<GenericGenoPhenom> selectParents(ParentSelection ps, ArrayList<GenericGenoPhenom> candidates, int num) {
-        ArrayList<GenericGenoPhenom> parents = new ArrayList<>();
+    public String toString() {
+        GenericGenoPhenom min = Collections.min(adults);
+        GenericGenoPhenom max = Collections.max(adults);
+
+        String out = "=== Generation: " + generation + " ===\n";
+        out += "Min: " + min.fitnessEvaluation() + " | " + Long.toBinaryString((Long) min.getGeno()) + "\n";
+        out += "Max: " + max.fitnessEvaluation() + " | " + Long.toBinaryString((Long) max.getGeno()) + "\n";
+        out += "Avg: " + adults.stream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble() + "\n\n";
+        return out;
+    }
+
+
+    public static List<GenericGenoPhenom> selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates, int num) {
+        List<GenericGenoPhenom> parents = new ArrayList<>();
 
         switch (ps) {
             case FITNESS_PROPORTIONATE:
@@ -87,7 +100,7 @@ public class EA {
 
             case TOURNAMENT:
                 for(int i=0; i<num; i++) {
-                    ArrayList<GenericGenoPhenom> subSet = getSubSet(candidates, tournamentK);
+                    List<GenericGenoPhenom> subSet = getSubSet(candidates, tournamentK);
 
                     if(Math.random() > 1-tournamentEpsilon) parents.add(Collections.max(subSet));
                     else parents.add(subSet.get((int) (Math.random()*subSet.size())));
@@ -100,7 +113,7 @@ public class EA {
     }
 
 
-    private static double[] generateCumulativeProbabilityDistribution(ParentSelection ps, ArrayList<GenericGenoPhenom> parents) {
+    private static double[] generateCumulativeProbabilityDistribution(ParentSelection ps, List<GenericGenoPhenom> parents) {
         double[] cdf = new double[parents.size()];
 
         switch (ps) {
@@ -144,8 +157,8 @@ public class EA {
     }
 
 
-    private static <T> ArrayList<T> getSubSet(ArrayList<T> fullArray, int size) {
-        ArrayList<T> array = new ArrayList<>();
+    private static <T> List<T> getSubSet(List<T> fullArray, int size) {
+        List<T> array = new ArrayList<>();
 
         for (int i = 0; i < size; i++)
             array.add(fullArray.get((int) (Math.random()*fullArray.size())));
