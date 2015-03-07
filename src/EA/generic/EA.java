@@ -2,7 +2,6 @@ package EA.generic;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 
 public class EA {
@@ -20,7 +19,7 @@ public class EA {
         this.adultSelection = adultSelection;
         this.parentSelection = parentSelection;
         this.populationSize = populationSize;
-        this.crossoverRate = crossoverRate;
+        this.crossoverRate = crossoverRate/2;
         this.mutationRate = mutationRate;
         this.children = children;
     }
@@ -28,20 +27,31 @@ public class EA {
 
     public void runGeneration() {
         selectSurvivingAdults();
-        children = generateTheNextGeneration();
+        generateTheNextGeneration();
 
         generation++;
     }
 
 
-    public ArrayList<GenericGenoPhenom> generateTheNextGeneration() {
-        ArrayList<GenericGenoPhenom> children = new ArrayList<>();
+    private void generateTheNextGeneration() {
+        children = new ArrayList<>();
 
-        return children;
+        int numToCrossover = 2 * (int) (adults.size()*crossoverRate);
+        ArrayList<GenericGenoPhenom> toCrossover = selectParents(parentSelection, adults, numToCrossover);
+        for(int i=0; i<numToCrossover; i+=2) {
+            children.add(toCrossover.get(i).crossover(toCrossover.get(i+1)));
+            children.add(toCrossover.get(i+1).crossover(toCrossover.get(i)));
+        }
+
+        int numToMutate = (int) (adults.size()*mutationRate);
+        ArrayList<GenericGenoPhenom> toMutate = selectParents(parentSelection, adults, numToMutate);
+        for(int i=0; i<numToMutate; i++) {
+            children.add(toMutate.get(i).mutate());
+        }
     }
 
 
-    public void selectSurvivingAdults() {
+    private void selectSurvivingAdults() {
         switch (adultSelection) {
             case FULL:
                 adults = children;
@@ -134,15 +144,12 @@ public class EA {
     }
 
 
-    private static <T> ArrayList<T> getSubSet(ArrayList<T> array, int size) {
-        Random r = new Random();
+    private static <T> ArrayList<T> getSubSet(ArrayList<T> fullArray, int size) {
+        ArrayList<T> array = new ArrayList<>();
 
-        for (int i = 0; i < size; i++) {
-            int indexToSwap = i + r.nextInt(array.size() - i);
-            T temp = array.get(i);
-            array.set(i, array.get(indexToSwap));
-            array.set(indexToSwap, temp);
-        }
-        return (ArrayList) array.subList(0, size);
+        for (int i = 0; i < size; i++)
+            array.add(fullArray.get((int) (Math.random()*fullArray.size())));
+
+        return array;
     }
 }
