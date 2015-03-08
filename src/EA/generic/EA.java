@@ -26,12 +26,11 @@ public class EA {
     }
 
 
-    public boolean runGeneration() {
+    public void runGeneration() {
         selectSurvivingAdults();
         generateTheNextGeneration();
 
         generation++;
-        return Collections.max(adults).isFinished();
     }
 
 
@@ -165,5 +164,14 @@ public class EA {
             array.add(fullArray.get((int) (Math.random()*fullArray.size())));
 
         return array;
+    }
+
+
+    public GenericGenoPhenom getBestNode() {
+        return Collections.max(adults);
+    }
+
+    public GenericGenoPhenom getWorstNode() {
+        return Collections.min(adults);
     }
 }

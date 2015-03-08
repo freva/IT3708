@@ -34,9 +34,4 @@ public class GenoPhenom extends GenericGenoPhenom<Long, Long> {
     public double fitnessEvaluation() {
         return Long.bitCount(getGeno());
     }
-
-    @Override
-    public boolean isFinished() {
-        return problemSize - fitnessEvaluation() == 0;
-    }
 }
