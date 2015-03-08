@@ -151,7 +151,7 @@ public class EA {
         double target = Math.random();
 
         for(int i=0; i<cdf.length; i++)
-            if(cdf[i] < target) return i;
+            if(cdf[i] > target) return i;
 
         return cdf.length-1;
     }
