@@ -18,7 +18,8 @@ public class GenoPhenom extends GenericGenoPhenom<Long, Long> {
     @Override
     public GenericGenoPhenom<Long, Long> crossover(GenericGenoPhenom<Long, Long> other) {
         int crossoverPoint = (int) (Math.random()*problemSize);
-        int crossoverBitMask = (1<<crossoverPoint) - 1;
+        long crossoverBitMask = (1<<crossoverPoint) - 1;
+
         return new GenoPhenom(other.getGeno() & ~crossoverBitMask | getGeno() & crossoverBitMask, problemSize);
     }
 
@@ -34,5 +35,10 @@ public class GenoPhenom extends GenericGenoPhenom<Long, Long> {
     @Override
     public double fitnessEvaluation() {
         return Long.bitCount(getGeno());
+    }
+
+
+    public String toString() {
+        return "Geno: " + Long.toBinaryString(getGeno());
     }
 }
