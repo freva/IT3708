@@ -28,7 +28,7 @@ public class Main {
 
     public static void runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, int probSize) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
-        long max = (1<<probSize) - 1;
+        long max = (1L<<probSize) - 1;
 
         for(int i=0; i<popSize; i++) {
             init.add(new GenoPhenom((long) (Math.random()*max), probSize));
