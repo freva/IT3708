@@ -30,7 +30,7 @@ public class Main {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
         long max = (1<<probSize) - 1;
 
-        for(int i=1; i<11; i++) {
+        for(int i=0; i<popSize; i++) {
             init.add(new GenoPhenom((long) (Math.random()*max), probSize));
         }
 

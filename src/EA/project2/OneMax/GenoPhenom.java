@@ -19,14 +19,15 @@ public class GenoPhenom extends GenericGenoPhenom<Long, Long> {
     public GenericGenoPhenom<Long, Long> crossover(GenericGenoPhenom<Long, Long> other) {
         int crossoverPoint = (int) (Math.random()*problemSize);
         int crossoverBitMask = (1<<crossoverPoint) - 1;
-        return new GenoPhenom(other.getGeno() & ~crossoverBitMask + getGeno() & crossoverBitMask, problemSize);
+        return new GenoPhenom(other.getGeno() & ~crossoverBitMask | getGeno() & crossoverBitMask, problemSize);
     }
 
     @Override
     public GenericGenoPhenom<Long, Long> mutate() {
-        int bitMask = 0;
+        long bitMask = 0;
         for(int i=0; i<problemSize/10; i++)
-            bitMask |= 1<<((int) (Math.random()*problemSize));
+            bitMask |= 1L<<((int) (Math.random()*problemSize));
+
         return new GenoPhenom(getGeno() ^ bitMask, problemSize);
     }
 
