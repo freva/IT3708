@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class EA {
-    private static final double tournamentEpsilon = 0.1;
+    private static final double tournamentEpsilon = 0.15;
     private static final int tournamentK = 5;
 
     private List<GenericGenoPhenom> adults = new ArrayList<>(), children;
@@ -65,11 +65,13 @@ public class EA {
                 break;
 
             case OVER_PRODUCTION:
+                children.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
                 Collections.sort(children);
                 adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
                 break;
 
             case MIXING:
+                children.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
                 children.addAll(adults);
                 Collections.sort(children);
                 adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
@@ -85,7 +87,7 @@ public class EA {
         String out = "=== Generation: " + generation + " ===\n";
         out += "Min: " + min + " | " + min.fitnessEvaluation() + "\n";
         out += "Max: " + max + " | " + max.fitnessEvaluation() + "\n";
-        out += "Avg: " + adults.stream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble() + "\n\n";
+        out += "Avg: " + adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble() + "\n\n";
         return out;
     }
 
@@ -122,15 +124,15 @@ public class EA {
 
         switch (ps) {
             case FITNESS_PROPORTIONATE:
-                double sum = parents.stream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).sum();
+                double sum = parents.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).sum();
 
                 for(int i=0; i<parents.size(); i++)
                     cdf[i] = parents.get(i).fitnessEvaluation() / sum;
             break;
 
             case SIGMA_SCALING:
-                double avg = parents.stream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
-                double squaredDifferences = parents.stream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).map(x-> Math.pow(x-avg, 2)).sum();
+                double avg = parents.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
+                double squaredDifferences = parents.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).map(x-> Math.pow(x-avg, 2)).sum();
                 double std = Math.sqrt(squaredDifferences/(parents.size() - 1));
 
                 for(int i=0; i<parents.size(); i++)

@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], Character[]> {
     private int S;
+    private double fitness = -1;
     private boolean local;
 
     public SurprisingSequenceGenoPhenom(Integer[] geno, int S, boolean local) {
@@ -38,7 +39,7 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
     @Override
     public GenericGenoPhenom<Integer[], Character[]> mutate() {
         Integer[] out = new Integer[getGeno().length];
-        double chance = 1d/500;
+        double chance = 1d/200;
 
         for(int i=0; i<getGeno().length; i++) {
             if(Math.random() > chance) out[i] = getGeno()[i];
@@ -50,12 +51,15 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
 
     @Override
     public double fitnessEvaluation() {
+        if(fitness == -1) {
+            char out[] = new char[getGeno().length];
+            for (int i = 0; i < getGeno().length; i++)
+                out[i] = getPhenom()[i];
+            double numViolations = local ? getLocallySurprisingEval(out) : getGloballySurprisingSequence(out);
+            fitness = 1.0 / (1 + numViolations);
+        }
 
-        char out[] = new char[getGeno().length];
-        for(int i=0; i<getGeno().length; i++)
-            out[i] = getPhenom()[i];
-        double fitness = local ? getLocallySurprisingEval(out) : getGloballySurprisingSequence(out);
-        return 1.0/(1+fitness);
+        return fitness;
     }
 
 
