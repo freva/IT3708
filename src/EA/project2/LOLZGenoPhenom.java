@@ -1,8 +1,7 @@
-package EA.project2.LOLZ;
+package EA.project2;
 
 import EA.generic.BitwiseOperations;
 import EA.generic.GenericGenoPhenom;
-import EA.project2.OneMax.OneMaxGenoPhenom;
 
 public class LOLZGenoPhenom extends OneMaxGenoPhenom {
     private int z;

@@ -178,4 +178,8 @@ public class EA {
     public GenericGenoPhenom getWorstNode() {
         return Collections.min(adults);
     }
+
+    public int getGeneration() {
+        return generation;
+    }
 }

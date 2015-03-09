@@ -1,13 +1,14 @@
 package EA;
 
-import EA.project2.LOLZ.LOLZGenoPhenom;
+import EA.project2.LOLZGenoPhenom;
 import EA.generic.AdultSelection;
 import EA.generic.EA;
 import EA.generic.GenericGenoPhenom;
 import EA.generic.ParentSelection;
-import EA.project2.OneMax.OneMaxGenoPhenom;
+import EA.project2.OneMaxGenoPhenom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Main {
@@ -19,11 +20,16 @@ public class Main {
         int populationSize = Integer.parseInt(args[3]);
         double crossoverRate = Double.parseDouble(args[4]), mutationRate = Double.parseDouble(args[5]), crossoverSplit = Double.parseDouble(args[6]);
 
-
         switch (args[0]) {
+            //1, 1, 0.3
             case "OneMax":
                 System.out.println("Running OneMax");
-                runOneMaxProblem(as, ps, populationSize, crossoverRate, 0.05, crossoverSplit, Integer.parseInt(args[7]));
+                int results[] = new int[100];
+                for(int i=0; i<100; i++) {
+                    results[i] = runOneMaxProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, Integer.parseInt(args[7]));
+                }
+                System.out.println(Arrays.toString(results));
+                System.out.println(Arrays.stream(results).average());
                 break;
 
             case "LOLZ":
@@ -34,21 +40,20 @@ public class Main {
     }
 
 
-    public static void runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize) {
+    public static int runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
         long max = (1L<<probSize) - 1;
 
-        for(int i=0; i<popSize; i++) {
+        for(int i=0; i<popSize; i++)
             init.add(new OneMaxGenoPhenom((long) (Math.random()*max), probSize));
-        }
 
         EA ea = new EA(as, ps, popSize, xRate, mutRate, xSplit, init);
 
         while(true) {
             ea.runGeneration();
-            System.out.println(ea);
+            //System.out.println(ea);
 
-            if(ea.getBestNode().fitnessEvaluation() == probSize) break;
+            if(ea.getBestNode().fitnessEvaluation() == probSize) return ea.getGeneration();
         }
     }
 

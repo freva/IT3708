@@ -1,4 +1,4 @@
-package EA.project2.OneMax;
+package EA.project2;
 
 import EA.generic.BitwiseOperations;
 import EA.generic.GenericGenoPhenom;
