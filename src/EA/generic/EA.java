@@ -74,12 +74,12 @@ public class EA {
 
 
     public String toString() {
-        GenericGenoPhenom min = Collections.min(adults);
-        GenericGenoPhenom max = Collections.max(adults);
+        GenericGenoPhenom min = getWorstNode();
+        GenericGenoPhenom max = getBestNode();
 
         String out = "=== Generation: " + generation + " ===\n";
-        out += "Min: " + min.fitnessEvaluation() + " | " + Long.toBinaryString((Long) min.getGeno()) + "\n";
-        out += "Max: " + max.fitnessEvaluation() + " | " + Long.toBinaryString((Long) max.getGeno()) + "\n";
+        out += "Min: " + min + " | " + min.fitnessEvaluation() + "\n";
+        out += "Max: " + max + " | " + max.fitnessEvaluation() + "\n";
         out += "Avg: " + adults.stream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble() + "\n\n";
         return out;
     }
