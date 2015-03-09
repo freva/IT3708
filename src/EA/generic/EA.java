@@ -11,17 +11,18 @@ public class EA {
 
     private List<GenericGenoPhenom> adults = new ArrayList<>(), children;
     private int populationSize, generation = 1;
-    private double crossoverRate, mutationRate;
+    private double crossoverRate, mutationRate, crossoverSplit;
     private AdultSelection adultSelection;
     private ParentSelection parentSelection;
 
     public EA(AdultSelection adultSelection, ParentSelection parentSelection, int populationSize,
-              double crossoverRate, double mutationRate, ArrayList<GenericGenoPhenom> children) {
+              double crossoverRate, double mutationRate, double crossoverSplit, ArrayList<GenericGenoPhenom> children) {
         this.adultSelection = adultSelection;
         this.parentSelection = parentSelection;
         this.populationSize = populationSize;
         this.crossoverRate = crossoverRate/2;
         this.mutationRate = mutationRate;
+        this.crossoverSplit = crossoverSplit;
         this.children = children;
     }
 
@@ -37,17 +38,22 @@ public class EA {
     private void generateTheNextGeneration() {
         children = new ArrayList<>();
 
-        int numToCrossover = 2 * (int) (adults.size()*crossoverRate);
-        List<GenericGenoPhenom> toCrossover = selectParents(parentSelection, adults, numToCrossover);
-        for(int i=0; i<numToCrossover; i+=2) {
-            children.add(toCrossover.get(i).crossover(toCrossover.get(i+1)));
-            children.add(toCrossover.get(i+1).crossover(toCrossover.get(i)));
+        int numCrossoverSplit = (int) (adults.size()*crossoverSplit);
+        GenericGenoPhenom[] allowedToMate = selectParents(parentSelection, adults);
+
+        for(int i=0; i<numCrossoverSplit; i+=2) {
+            if(Math.random() < crossoverRate) {
+                children.add(allowedToMate[i].crossover(allowedToMate[i + 1]));
+                children.add(allowedToMate[i + 1].crossover(allowedToMate[i]));
+            } else {
+                children.add(allowedToMate[i]);
+                children.add(allowedToMate[i+1]);
+            }
         }
 
-        int numToMutate = (int) (adults.size()*mutationRate);
-        List<GenericGenoPhenom> toMutate = selectParents(parentSelection, adults, numToMutate);
-        for(int i=0; i<numToMutate; i++) {
-            children.add(toMutate.get(i).mutate());
+        for(int i=numCrossoverSplit+1; i<adults.size(); i++) {
+            if(Math.random() < mutationRate) children.add(allowedToMate[i].mutate());
+            else children.add(allowedToMate[i]);
         }
     }
 
@@ -69,7 +75,6 @@ public class EA {
                 adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
                 break;
         }
-
     }
 
 
@@ -85,8 +90,8 @@ public class EA {
     }
 
 
-    public static List<GenericGenoPhenom> selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates, int num) {
-        List<GenericGenoPhenom> parents = new ArrayList<>();
+    public static GenericGenoPhenom[] selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates) {
+        GenericGenoPhenom[] parents = new GenericGenoPhenom[candidates.size()];
 
         switch (ps) {
             case FITNESS_PROPORTIONATE:
@@ -94,20 +99,19 @@ public class EA {
             case UNIFORM:
                 double cdf[] = generateCumulativeProbabilityDistribution(ps, candidates);
 
-                for(int i=0; i<num; i++)
-                    parents.add(candidates.get(selectRandomFromCDF(cdf)));
+                for(int i=0; i<candidates.size(); i++)
+                    parents[i] = candidates.get(selectRandomFromCDF(cdf));
             break;
 
             case TOURNAMENT:
-                for(int i=0; i<num; i++) {
+                for(int i=0; i<candidates.size(); i++) {
                     List<GenericGenoPhenom> subSet = getSubSet(candidates, tournamentK);
 
-                    if(Math.random() > 1-tournamentEpsilon) parents.add(Collections.max(subSet));
-                    else parents.add(subSet.get((int) (Math.random()*subSet.size())));
+                    if(Math.random() < 1-tournamentEpsilon) parents[i] = Collections.max(subSet);
+                    else parents[i] = subSet.get((int) (Math.random() * subSet.size()));
                 }
             break;
         }
-
 
         return parents;
     }
@@ -161,7 +165,7 @@ public class EA {
         List<T> array = new ArrayList<>();
 
         for (int i = 0; i < size; i++)
-            array.add(fullArray.get((int) (Math.random()*fullArray.size())));
+            array.add(fullArray.get((int) (Math.random() * fullArray.size())));
 
         return array;
     }
