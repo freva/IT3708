@@ -10,7 +10,7 @@ public class BitwiseOperations {
 
     public static long mutate(long num, int maxPoint) {
         long bitMask = 0;
-        for(int i=0; i<maxPoint/10; i++)
+        for(int i=0; i< 0.5 + Math.random(); i++)
             bitMask |= 1L<<((int) (Math.random()*maxPoint));
 
         return num ^ bitMask;
