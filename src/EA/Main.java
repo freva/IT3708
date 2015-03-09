@@ -1,6 +1,6 @@
 package EA;
 
-import EA.LOLZ.LOLZGenoPhenom;
+import EA.project2.LOLZ.LOLZGenoPhenom;
 import EA.generic.AdultSelection;
 import EA.generic.EA;
 import EA.generic.GenericGenoPhenom;
@@ -12,28 +12,29 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        //Arguments: ProblemName, AdultSelection [F, O, M], ParentSelection [F, S, T, U], populationSize, crossoverRate, mutationRate, (problemSize, (z))
+        //Arguments: ProblemName, AdultSelection [F, O, M], ParentSelection [F, S, T, U], populationSize,
+        //crossoverRate, mutationRate, crossoverSplit, (problemSize, (z))
         AdultSelection as = parseAdultSelection(args[1]);
         ParentSelection ps = parseParentSelection(args[2]);
         int populationSize = Integer.parseInt(args[3]);
-        double crossoverRate = Double.parseDouble(args[4]), mutationRate = Double.parseDouble(args[5]);
+        double crossoverRate = Double.parseDouble(args[4]), mutationRate = Double.parseDouble(args[5]), crossoverSplit = Double.parseDouble(args[6]);
 
 
         switch (args[0]) {
             case "OneMax":
                 System.out.println("Running OneMax");
-                runOneMaxProblem(as, ps, populationSize, crossoverRate, mutationRate, Integer.parseInt(args[6]));
+                runOneMaxProblem(as, ps, populationSize, crossoverRate, 0.05, crossoverSplit, Integer.parseInt(args[7]));
                 break;
 
             case "LOLZ":
                 System.out.println("Running LOLZ");
-                runLOLZProblem(as, ps, populationSize, crossoverRate, mutationRate, Integer.parseInt(args[6]), Integer.parseInt(args[7]));
+                runLOLZProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, Integer.parseInt(args[7]), Integer.parseInt(args[8]));
                 break;
         }
     }
 
 
-    public static void runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, int probSize) {
+    public static void runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
         long max = (1L<<probSize) - 1;
 
@@ -41,7 +42,7 @@ public class Main {
             init.add(new OneMaxGenoPhenom((long) (Math.random()*max), probSize));
         }
 
-        EA ea = new EA(as, ps, popSize, xRate, mutRate, init);
+        EA ea = new EA(as, ps, popSize, xRate, mutRate, xSplit, init);
 
         while(true) {
             ea.runGeneration();
@@ -52,7 +53,7 @@ public class Main {
     }
 
 
-    public static void runLOLZProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, int probSize, int z) {
+    public static void runLOLZProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize, int z) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
         long max = (1L<<probSize) - 1;
 
@@ -60,7 +61,7 @@ public class Main {
             init.add(new LOLZGenoPhenom((long) (Math.random()*max), probSize, z));
         }
 
-        EA ea = new EA(as, ps, popSize, xRate, mutRate, init);
+        EA ea = new EA(as, ps, popSize, xRate, mutRate, xSplit, init);
 
         while(true) {
             ea.runGeneration();
