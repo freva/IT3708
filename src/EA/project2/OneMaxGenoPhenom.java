@@ -47,7 +47,7 @@ public class OneMaxGenoPhenom extends GenericGenoPhenom<Long, Long> {
 
     public static long binaryMutation(long num, int maxPoint) {
         long bitMask = 0;
-        double chance = 1d/500;
+        double chance = 1d/100;
         for(int i = 0; i< maxPoint; i++) {
             if (Math.random() < chance)
                 bitMask |= 1L << i;
