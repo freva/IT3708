@@ -100,7 +100,7 @@ public class EA {
         switch (ps) {
             case FITNESS_PROPORTIONATE:
             case SIGMA_SCALING:
-            case UNIFORM:
+            case RANK:
                 double cdf[] = generateCumulativeProbabilityDistribution(ps, candidates);
 
                 for(int i=0; i<numToGenerate; i++)
@@ -141,10 +141,11 @@ public class EA {
                     cdf[i] = (1 + (parents.get(i).fitnessEvaluation() - avg)/(2 * std)) / parents.size();
             break;
 
-            case UNIFORM:
-            default:
-                for(int i=0; i<parents.size(); i++)
-                    cdf[i] = 1.0 / parents.size();
+            case RANK:
+                Collections.sort(parents);
+                double totSum = parents.size()*(parents.size()+1)/2;
+                for(int i=1; i<parents.size()+1; i++)
+                    cdf[i-1] = i/totSum;
                 break;
         }
 
