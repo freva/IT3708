@@ -94,7 +94,7 @@ public class EA {
     }
 
 
-    public static GenericGenoPhenom[] selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates, int numToGenerate) {
+    private static GenericGenoPhenom[] selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates, int numToGenerate) {
         GenericGenoPhenom[] parents = new GenericGenoPhenom[numToGenerate];
 
         switch (ps) {
