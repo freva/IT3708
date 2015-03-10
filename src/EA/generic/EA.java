@@ -38,8 +38,9 @@ public class EA {
     private void generateTheNextGeneration() {
         children = new ArrayList<>();
 
-        int numCrossoverSplit = (int) (adults.size()*crossoverSplit);
-        GenericGenoPhenom[] allowedToMate = selectParents(parentSelection, adults);
+        int numToGenerate = (adultSelection == AdultSelection.OVER_PRODUCTION) ? adults.size()*2 : adults.size();
+        int numCrossoverSplit = (int) (numToGenerate*crossoverSplit);
+        GenericGenoPhenom[] allowedToMate = selectParents(parentSelection, adults, numToGenerate);
 
         for(int i=0; i<numCrossoverSplit; i+=2) {
             if(Math.random() < crossoverRate) {
@@ -51,7 +52,7 @@ public class EA {
             }
         }
 
-        for(int i=numCrossoverSplit+1; i<adults.size(); i++) {
+        for(int i=numCrossoverSplit+1; i<numToGenerate; i++) {
             if(Math.random() < mutationRate) children.add(allowedToMate[i].mutate());
             else children.add(allowedToMate[i]);
         }
@@ -81,19 +82,20 @@ public class EA {
 
 
     public String toString() {
-        GenericGenoPhenom min = getWorstNode();
         GenericGenoPhenom max = getBestNode();
 
-        String out = "=== Generation: " + generation + " ===\n";
-        out += "Min: " + min + " | " + min.fitnessEvaluation() + "\n";
-        out += "Max: " + max + " | " + max.fitnessEvaluation() + "\n";
-        out += "Avg: " + adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble() + "\n\n";
+        double avg = adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
+        double squaredDifferences = adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).map(x-> Math.pow(x-avg, 2)).sum();
+        double std = Math.sqrt(squaredDifferences/(adults.size() - 1));
+
+        String out = "Gen: " + generation + " | Avg: " + String.format("%.2f", avg) + " | Std: " + String.format("%.2f", std);
+        out += " | Max: " + String.format("%.2f", max.fitnessEvaluation()) + "\n" + max + "\n";
         return out;
     }
 
 
-    public static GenericGenoPhenom[] selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates) {
-        GenericGenoPhenom[] parents = new GenericGenoPhenom[candidates.size()];
+    public static GenericGenoPhenom[] selectParents(ParentSelection ps, List<GenericGenoPhenom> candidates, int numToGenerate) {
+        GenericGenoPhenom[] parents = new GenericGenoPhenom[numToGenerate];
 
         switch (ps) {
             case FITNESS_PROPORTIONATE:
@@ -101,12 +103,12 @@ public class EA {
             case UNIFORM:
                 double cdf[] = generateCumulativeProbabilityDistribution(ps, candidates);
 
-                for(int i=0; i<candidates.size(); i++)
+                for(int i=0; i<numToGenerate; i++)
                     parents[i] = candidates.get(selectRandomFromCDF(cdf));
             break;
 
             case TOURNAMENT:
-                for(int i=0; i<candidates.size(); i++) {
+                for(int i=0; i<numToGenerate; i++) {
                     List<GenericGenoPhenom> subSet = getSubSet(candidates, tournamentK);
 
                     if(Math.random() < 1-tournamentEpsilon) parents[i] = Collections.max(subSet);
