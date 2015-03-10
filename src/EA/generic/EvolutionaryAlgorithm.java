@@ -1,11 +1,14 @@
 package EA.generic;
 
+import EA.generic.selection.AdultSelection;
+import EA.generic.selection.ParentSelection;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class EA {
+public class EvolutionaryAlgorithm {
     private static final double tournamentEpsilon = 0.15;
     private static final int tournamentK = 5;
 
@@ -15,8 +18,8 @@ public class EA {
     private AdultSelection adultSelection;
     private ParentSelection parentSelection;
 
-    public EA(AdultSelection adultSelection, ParentSelection parentSelection, int populationSize,
-              double crossoverRate, double mutationRate, double crossoverSplit, ArrayList<GenericGenoPhenom> children) {
+    public EvolutionaryAlgorithm(AdultSelection adultSelection, ParentSelection parentSelection, int populationSize,
+                                 double crossoverRate, double mutationRate, double crossoverSplit, ArrayList<GenericGenoPhenom> children) {
         this.adultSelection = adultSelection;
         this.parentSelection = parentSelection;
         this.populationSize = populationSize;
