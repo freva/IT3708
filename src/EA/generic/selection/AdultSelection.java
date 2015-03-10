@@ -1,4 +1,4 @@
-package EA.generic;
+package EA.generic.selection;
 
 
 public enum AdultSelection {
