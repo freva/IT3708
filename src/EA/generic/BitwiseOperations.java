@@ -2,7 +2,8 @@ package EA.generic;
 
 public class BitwiseOperations {
     public static long crossover(long num1, long num2, int maxPoint) {
-        long crossoverBitMask = (1<<maxPoint) - 1;
+        int crossoverPoint = 1 + (int) (Math.random()*maxPoint - 2);
+        long crossoverBitMask = (1<<crossoverPoint) - 1;
 
         return num2 & ~crossoverBitMask | num1 & crossoverBitMask;
     }
