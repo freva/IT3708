@@ -31,7 +31,7 @@ public class EvolutionaryAlgorithm {
 
 
     public void runGeneration() {
-        selectSurvivingAdults();
+        adults = adultSelection.selectSurvivingAdults(adults, children, populationSize);
         generateTheNextGeneration();
 
         generation++;
@@ -58,28 +58,6 @@ public class EvolutionaryAlgorithm {
         for(int i=numCrossoverSplit+1; i<numToGenerate; i++) {
             if(Math.random() < mutationRate) children.add(allowedToMate[i].mutate());
             else children.add(allowedToMate[i]);
-        }
-    }
-
-
-    private void selectSurvivingAdults() {
-        switch (adultSelection) {
-            case FULL:
-                adults = children;
-                break;
-
-            case OVER_PRODUCTION:
-                children.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
-                Collections.sort(children);
-                adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
-                break;
-
-            case MIXING:
-                children.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
-                children.addAll(adults);
-                Collections.sort(children);
-                adults = children.subList(Math.max(children.size() - populationSize, 0), children.size());
-                break;
         }
     }
 
