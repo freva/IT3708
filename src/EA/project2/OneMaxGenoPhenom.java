@@ -1,6 +1,5 @@
 package EA.project2;
 
-import EA.generic.BitwiseOperations;
 import EA.generic.GenericGenoPhenom;
 
 public class OneMaxGenoPhenom extends GenericGenoPhenom<Long, Long> {
@@ -20,12 +19,12 @@ public class OneMaxGenoPhenom extends GenericGenoPhenom<Long, Long> {
 
     @Override
     public GenericGenoPhenom<Long, Long> crossover(GenericGenoPhenom<Long, Long> other) {
-        return new OneMaxGenoPhenom(BitwiseOperations.crossover(getGeno(), other.getGeno(), problemSize), problemSize);
+        return new OneMaxGenoPhenom(binaryCrossover(getGeno(), other.getGeno(), problemSize), problemSize);
     }
 
     @Override
     public GenericGenoPhenom<Long, Long> mutate() {
-        return new OneMaxGenoPhenom(BitwiseOperations.mutate(getGeno(), problemSize), problemSize);
+        return new OneMaxGenoPhenom(binaryMutation(getGeno(), problemSize), problemSize);
     }
 
     @Override
@@ -36,5 +35,24 @@ public class OneMaxGenoPhenom extends GenericGenoPhenom<Long, Long> {
 
     public String toString() {
         return String.format(formatStr, Long.toBinaryString(getGeno())).replace(' ', '0');
+    }
+
+
+    public static long binaryCrossover(long num1, long num2, int maxPoint) {
+        int crossoverPoint = 1 + (int) (Math.random()*maxPoint - 2);
+        long crossoverBitMask = (1<<crossoverPoint) - 1;
+
+        return num2 & ~crossoverBitMask | num1 & crossoverBitMask;
+    }
+
+    public static long binaryMutation(long num, int maxPoint) {
+        long bitMask = 0;
+        double chance = 1d/500;
+        for(int i = 0; i< maxPoint; i++) {
+            if (Math.random() < chance)
+                bitMask |= 1L << i;
+        }
+
+        return num ^ bitMask;
     }
 }

@@ -1,6 +1,5 @@
 package EA.project2;
 
-import EA.generic.BitwiseOperations;
 import EA.generic.GenericGenoPhenom;
 
 public class LOLZGenoPhenom extends OneMaxGenoPhenom {
@@ -13,12 +12,12 @@ public class LOLZGenoPhenom extends OneMaxGenoPhenom {
 
     @Override
     public GenericGenoPhenom<Long, Long> crossover(GenericGenoPhenom<Long, Long> other) {
-        return new LOLZGenoPhenom(BitwiseOperations.crossover(getGeno(), other.getGeno(), problemSize), problemSize, z);
+        return new LOLZGenoPhenom(binaryCrossover(getGeno(), other.getGeno(), problemSize), problemSize, z);
     }
 
     @Override
     public GenericGenoPhenom<Long, Long> mutate() {
-        return new LOLZGenoPhenom(BitwiseOperations.mutate(getGeno(), problemSize), problemSize, z);
+        return new LOLZGenoPhenom(binaryMutation(getGeno(), problemSize), problemSize, z);
     }
 
     @Override
