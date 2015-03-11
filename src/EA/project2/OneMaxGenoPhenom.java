@@ -29,7 +29,7 @@ public class OneMaxGenoPhenom extends GenericGenoPhenom<Long, Long> {
 
     @Override
     public double fitnessEvaluation() {
-        return Long.bitCount(getGeno());
+        return (double) Long.bitCount(getGeno())/problemSize;
     }
 
 

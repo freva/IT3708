@@ -23,7 +23,7 @@ public class LOLZGenoPhenom extends OneMaxGenoPhenom {
     @Override
     public double fitnessEvaluation() {
         int numLeadingZeroes = Long.numberOfLeadingZeros(getPhenom())-64+problemSize;
-        return numLeadingZeroes > 0 ? Math.min(numLeadingZeroes, z) :
-                Long.numberOfLeadingZeros(~getPhenom()&((1L << problemSize)-1)) - 64+problemSize;
+        return (double) (numLeadingZeroes > 0 ? Math.min(numLeadingZeroes, z) :
+                Long.numberOfLeadingZeros(~getPhenom()&((1L << problemSize)-1)) - 64+problemSize) / problemSize;
     }
 }

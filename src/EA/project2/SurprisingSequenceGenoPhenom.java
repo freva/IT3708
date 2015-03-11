@@ -55,15 +55,15 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
             char out[] = new char[getGeno().length];
             for (int i = 0; i < getGeno().length; i++)
                 out[i] = getPhenom()[i];
-            double numViolations = local ? getNumOfLocalSequenceViolations(out) : getNumOfGlobalSequenceViolations(out);
-            fitness = 1.0 / (1 + numViolations);
+            int totPos = local ? Math.floorDiv((int) Math.pow(out.length-1, 2), 4) : Math.floorDiv((out.length-1)*(out.length+1)*(2*out.length-3), 24);
+            fitness = 1 - (local ? getNumOfLocalSequenceViolations(out) : getNumOfGlobalSequenceViolations(out)) / totPos;
         }
 
         return fitness;
     }
 
 
-    private static double getNumOfGlobalSequenceViolations(char[] out) {
+    public static double getNumOfGlobalSequenceViolations(char[] out) {
         HashSet<String> sequences = new HashSet<>();
 
         int counter = 0;
@@ -81,7 +81,7 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
     }
 
 
-    private static double getNumOfLocalSequenceViolations(char[] out) {
+    public static double getNumOfLocalSequenceViolations(char[] out) {
         HashSet<String> sequences = new HashSet<>();
 
         int counter = 0;

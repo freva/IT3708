@@ -62,12 +62,12 @@ public class EvolutionaryAlgorithm {
     public String toString() {
         GenericGenoPhenom max = getBestNode();
 
-        double avg = adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
+        double avg = getAverageFitness();
         double squaredDifferences = adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).map(x-> Math.pow(x-avg, 2)).sum();
         double std = Math.sqrt(squaredDifferences/(adults.size() - 1));
 
-        String out = "Gen: " + generation + " | Avg: " + String.format("%.2f", avg) + " | Std: " + String.format("%.2f", std);
-        out += " | Max: " + String.format("%.2f", max.fitnessEvaluation()) + "\n" + max + "\n";
+        String out = "Gen: " + generation + " | Avg: " + String.format("%.4f", avg) + " | Std: " + String.format("%.4f", std);
+        out += " | Max: " + String.format("%.4f", max.fitnessEvaluation()) + "\n" + max + "\n";
         return out;
     }
 
@@ -82,5 +82,9 @@ public class EvolutionaryAlgorithm {
 
     public int getGeneration() {
         return generation;
+    }
+
+    public double getAverageFitness() {
+        return adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
     }
 }

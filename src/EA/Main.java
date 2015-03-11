@@ -1,87 +1,82 @@
 package EA;
 
 import EA.project2.LOLZGenoPhenom;
-import EA.generic.AdultSelection;
-import EA.generic.EA;
+import EA.generic.selection.AdultSelection;
+import EA.generic.EvolutionaryAlgorithm;
 import EA.generic.GenericGenoPhenom;
-import EA.generic.ParentSelection;
+import EA.generic.selection.ParentSelection;
 import EA.project2.OneMaxGenoPhenom;
 import EA.project2.SurprisingSequenceGenoPhenom;
-import boids.simulation.objects.Boid;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class Main {
     public static void main(String[] args) {
         //Arguments: ProblemName, AdultSelection [F, O, M], ParentSelection [F, S, T, U], populationSize,
         //crossoverRate, mutationRate, crossoverSplit, (problemSize, (z | S, (local))
+        args = new String[]{"SupSeq", "O", "T", "800", "0.9", "0.5", "0.5", "24", "10", "false"};
+
         AdultSelection as = parseAdultSelection(args[1]);
         ParentSelection ps = parseParentSelection(args[2]);
         int populationSize = Integer.parseInt(args[3]), probSize = Integer.parseInt(args[7]);
         double crossoverRate = Double.parseDouble(args[4]), mutationRate = Double.parseDouble(args[5]), crossoverSplit = Double.parseDouble(args[6]);
 
+        char[] out = new char[]{'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'};
+        System.out.println(SurprisingSequenceGenoPhenom.getNumOfGlobalSequenceViolations(out));
+        System.out.println(SurprisingSequenceGenoPhenom.getNumOfLocalSequenceViolations(out));
+        //if(1==1) return;
+
+        ArrayList<GenericGenoPhenom> init = null;
         switch (args[0]) {
-            //1, 1, 0.3
+            //800, 0.9, 0.5, 0.5, 40
             case "OneMax":
-                int results[] = new int[100];
-                for(int i=0; i<100; i++) {
-                    results[i] = runOneMaxProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, probSize);
-                }
-                System.out.println(Arrays.toString(results));
-                System.out.println(Arrays.stream(results).average());
+                init = runOneMaxProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, probSize);
                 break;
 
             case "LOLZ":
-                runLOLZProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, probSize, Integer.parseInt(args[8]));
+                init = runLOLZProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, probSize, Integer.parseInt(args[8]));
                 break;
 
             case "SupSeq":
-                runSupSeqProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, probSize, Integer.parseInt(args[8]), Boolean.parseBoolean(args[9]));
+                init = runSupSeqProblem(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, probSize, Integer.parseInt(args[8]), Boolean.parseBoolean(args[9]));
                 break;
+        }
+
+
+        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, init);
+        while(true) {
+            ea.runGeneration();
+            System.out.println(ea);
+
+            if(ea.getBestNode().fitnessEvaluation() == 1) break;
         }
     }
 
 
-    public static int runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize) {
+    public static ArrayList<GenericGenoPhenom> runOneMaxProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
         long max = (1L<<probSize) - 1;
 
         for(int i=0; i<popSize; i++)
             init.add(new OneMaxGenoPhenom((long) (Math.random()*max), probSize));
 
-        EA ea = new EA(as, ps, popSize, xRate, mutRate, xSplit, init);
-
-        while(true) {
-            ea.runGeneration();
-            //System.out.println(ea);
-
-            if(ea.getBestNode().fitnessEvaluation() == probSize) return ea.getGeneration();
-        }
+        return init;
     }
 
 
-    public static void runLOLZProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize, int z) {
+    public static ArrayList<GenericGenoPhenom> runLOLZProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize, int z) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
         long max = (1L<<probSize) - 1;
 
-        for(int i=0; i<popSize; i++) {
+        for(int i=0; i<popSize; i++)
             init.add(new LOLZGenoPhenom((long) (Math.random()*max), probSize, z));
-        }
 
-        EA ea = new EA(as, ps, popSize, xRate, mutRate, xSplit, init);
-
-        while(true) {
-            ea.runGeneration();
-            System.out.println(ea);
-
-            if(ea.getBestNode().fitnessEvaluation() == probSize) break;
-        }
+        return init;
     }
 
 
-    public static void runSupSeqProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize, int S, boolean local) {
+    public static ArrayList<GenericGenoPhenom> runSupSeqProblem(AdultSelection as, ParentSelection ps, int popSize, double xRate, double mutRate, double xSplit, int probSize, int S, boolean local) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
 
         for(int i=0; i<popSize; i++) {
@@ -92,14 +87,7 @@ public class Main {
             init.add(new SurprisingSequenceGenoPhenom(out, S, local));
         }
 
-        EA ea = new EA(as, ps, popSize, xRate, mutRate, xSplit, init);
-
-        while(true) {
-            ea.runGeneration();
-            System.out.println(ea);
-
-            if(ea.getBestNode().fitnessEvaluation() == 1) break;
-        }
+        return init;
     }
 
 
@@ -130,11 +118,11 @@ public class Main {
             case "T":
                 return ParentSelection.TOURNAMENT;
 
-            case "U":
-                return ParentSelection.UNIFORM;
+            case "R":
+                return ParentSelection.RANK;
 
             default:
-                return ParentSelection.UNIFORM;
+                return ParentSelection.RANK;
         }
     }
 }
