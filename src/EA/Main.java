@@ -9,23 +9,18 @@ import EA.project2.OneMaxGenoPhenom;
 import EA.project2.SurprisingSequenceGenoPhenom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Main {
     public static void main(String[] args) {
         //Arguments: ProblemName, AdultSelection [F, O, M], ParentSelection [F, S, T, U], populationSize,
         //crossoverRate, mutationRate, crossoverSplit, (problemSize, (z | S, (local))
-        args = new String[]{"SupSeq", "O", "T", "800", "0.9", "0.5", "0.5", "24", "10", "false"};
 
         AdultSelection as = parseAdultSelection(args[1]);
         ParentSelection ps = parseParentSelection(args[2]);
         int populationSize = Integer.parseInt(args[3]), probSize = Integer.parseInt(args[7]);
         double crossoverRate = Double.parseDouble(args[4]), mutationRate = Double.parseDouble(args[5]), crossoverSplit = Double.parseDouble(args[6]);
-
-        char[] out = new char[]{'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'};
-        System.out.println(SurprisingSequenceGenoPhenom.getNumOfGlobalSequenceViolations(out));
-        System.out.println(SurprisingSequenceGenoPhenom.getNumOfLocalSequenceViolations(out));
-        //if(1==1) return;
 
         ArrayList<GenericGenoPhenom> init = null;
         switch (args[0]) {
@@ -45,11 +40,11 @@ public class Main {
 
 
         EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(as, ps, populationSize, crossoverRate, mutationRate, crossoverSplit, init);
-        while(true) {
+        while (true) {
             ea.runGeneration();
             System.out.println(ea);
 
-            if(ea.getBestNode().fitnessEvaluation() == 1) break;
+            if (ea.getBestNode().fitnessEvaluation() == 1) break;
         }
     }
 

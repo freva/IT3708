@@ -38,12 +38,10 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
 
     @Override
     public GenericGenoPhenom<Integer[], Character[]> mutate() {
-        Integer[] out = new Integer[getGeno().length];
-        double chance = 1d/200;
-
-        for(int i=0; i<getGeno().length; i++) {
-            if(Math.random() > chance) out[i] = getGeno()[i];
-            else out[i] = (int) (Math.random()*S);
+        Integer[] out = getGeno().clone();
+        for(int i=0; i<0.5 + Math.random()*out.length/40; i++) {
+            int toMutate = (int) (Math.random() * out.length);
+            out[toMutate] = (out[toMutate] + (1 + (int) (Math.random() * (S - 1)))) % S;
         }
 
         return new SurprisingSequenceGenoPhenom(out, S, local);
