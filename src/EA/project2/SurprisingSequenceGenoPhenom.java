@@ -66,12 +66,10 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
 
         int counter = 0;
         for(int start=0; start<out.length; start++) {
-            for(int length=1; start+length <= out.length; length++) {
-                for(int dist=0; start+dist+length*2 <= out.length; dist++) {
-                    String cand = new String(out, start, length) + dist + new String(out, start+length+dist, length);
-                    if (sequences.contains(cand)) counter++;
-                    else sequences.add(cand);
-                }
+            for(int dist=1; start+dist < out.length; dist++) {
+                String cand = "" + out[start] + dist + out[start+dist];
+                if (sequences.contains(cand)) counter++;
+                else sequences.add(cand);
             }
         }
 
@@ -83,12 +81,10 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
         HashSet<String> sequences = new HashSet<>();
 
         int counter = 0;
-        for(int start=0; start<out.length; start++) {
-            for(int length=2; start+length <= out.length; length+=2) {
-                String cand = new String(out, start, length);
-                if(sequences.contains(cand)) counter++;
-                else sequences.add(cand);
-            }
+        for(int start=0; start<out.length-1; start++) {
+            String cand = new String(out, start, 2);
+            if(sequences.contains(cand)) counter++;
+            else sequences.add(cand);
         }
 
         return counter;
