@@ -53,7 +53,7 @@ public class SurprisingSequenceGenoPhenom extends GenericGenoPhenom<Integer[], C
             char out[] = new char[getGeno().length];
             for (int i = 0; i < getGeno().length; i++)
                 out[i] = getPhenom()[i];
-            int totPos = local ? Math.floorDiv((int) Math.pow(out.length-1, 2), 4) : Math.floorDiv((out.length-1)*(out.length+1)*(2*out.length-3), 24);
+            int totPos = local ? out.length-1 : out.length*(out.length-1)/2;
             fitness = 1 - (local ? getNumOfLocalSequenceViolations(out) : getNumOfGlobalSequenceViolations(out)) / totPos;
         }
 
