@@ -1,18 +1,14 @@
-package EA;
+package EA.project2;
 
-import EA.project2.LOLZGenoPhenom;
 import EA.generic.selection.AdultSelection;
 import EA.generic.EvolutionaryAlgorithm;
 import EA.generic.GenericGenoPhenom;
 import EA.generic.selection.ParentSelection;
-import EA.project2.OneMaxGenoPhenom;
-import EA.project2.SurprisingSequenceGenoPhenom;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
-public class Main {
+public class Project2 {
     public static void main(String[] args) {
         //Arguments: ProblemName, AdultSelection [F, O, M], ParentSelection [F, S, T, U], populationSize,
         //crossoverRate, mutationRate, crossoverSplit, (problemSize, (z | S, (local))
