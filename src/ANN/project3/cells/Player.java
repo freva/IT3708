@@ -3,10 +3,11 @@ package ANN.project3.cells;
 import ANN.project3.Project3;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
 public class Player extends EmptyCell {
-    private Direction direction = Direction.UP;
+    private Direction direction = Direction.SOUTH;
     private double[][] dynCoords = {{0.5, 0.85}, {0.85, 0.15}, {0.5, 0.3}, {0.15, 0.15}};
 
     @Override
@@ -20,10 +21,40 @@ public class Player extends EmptyCell {
         for (int i = 1; i < dynCoords.length; i++)
             polygon.lineTo(offsetX + dynCoords[i][0]*Project3.CELL_SIZE, offsetY + dynCoords[i][1]*Project3.CELL_SIZE);
 
+        AffineTransform af = new AffineTransform();
+        af.translate(offsetX + Project3.CELL_SIZE/2, offsetY + Project3.CELL_SIZE/2);
+        af.rotate(direction.angle());
+        af.translate(-offsetX - Project3.CELL_SIZE/2, -offsetY - Project3.CELL_SIZE/2);
+        polygon.transform(af);
 
         polygon.closePath();
         g2.setColor(Color.BLUE);
         g2.fill(polygon);
         g2.draw(polygon);
+    }
+
+
+    private enum Direction {
+        NORTH(0, -1, Math.PI), EAST(1, 0, Math.PI*1.5), SOUTH(0, 1, 0), WEST(-1, 0, Math.PI*0.5);
+
+        private int x, y;
+        private double angle;
+        Direction(int x, int y, double angle) {
+            this.x = x;
+            this.y = y;
+            this.angle = angle;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public double angle() {
+            return angle;
+        }
     }
 }

@@ -25,7 +25,6 @@ public class Flatland extends JPanel {
 
     public static EmptyCell[][] generateBoard(int dimension, double probPoison, double probFood) {
         EmptyCell[][] board = new EmptyCell[dimension][dimension];
-        System.out.println(probFood + " " + probPoison);
 
         for(int i=0; i<dimension; i++) {
             for(int j=0; j<dimension; j++) {
