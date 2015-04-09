@@ -1,5 +1,6 @@
 package ANN.project3.cells;
 
+import ANN.project3.Board;
 import ANN.project3.Project3;
 
 import java.awt.*;
@@ -16,7 +17,7 @@ public class Player extends EmptyCell {
 
         Graphics2D g2 = (Graphics2D) g;
         GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, dynCoords.length);
-        polygon.moveTo(offsetX + dynCoords[0][0]* Project3.CELL_SIZE, offsetY + dynCoords[0][1]*Project3.CELL_SIZE);
+        polygon.moveTo(offsetX + dynCoords[0][0]*Project3.CELL_SIZE, offsetY + dynCoords[0][1]*Project3.CELL_SIZE);
 
         for (int i = 1; i < dynCoords.length; i++)
             polygon.lineTo(offsetX + dynCoords[i][0]*Project3.CELL_SIZE, offsetY + dynCoords[i][1]*Project3.CELL_SIZE);
@@ -38,12 +39,8 @@ public class Player extends EmptyCell {
         return orientation;
     }
 
-    public void turnRight() {
-        orientation = orientation.turnRight();
-    }
-
-    public void turnLeft() {
-        orientation = orientation.turnLeft();
+    public void turn(Board.Direction direction) {
+        orientation = orientation.turn(direction);
     }
 
 
@@ -70,12 +67,19 @@ public class Player extends EmptyCell {
             return angle;
         }
 
-        public Orientation turnRight() {
-            return Orientation.values()[(indexOf()+1)%Orientation.values().length];
-        }
 
-        public Orientation turnLeft() {
-            return Orientation.values()[(indexOf()-1+Orientation.values().length)%Orientation.values().length];
+        public Orientation turn(Board.Direction direction) {
+            switch (direction) {
+                case RIGHT:
+                    return Orientation.values()[(indexOf()+1)%Orientation.values().length];
+
+                case LEFT:
+                    return Orientation.values()[(indexOf()-1+Orientation.values().length)%Orientation.values().length];
+
+                case UP:
+                default:
+                    return this;
+            }
         }
 
 

@@ -49,14 +49,26 @@ public class Board {
                 break;
 
             case RIGHT:
-                player.turnRight();
-                break;
-
             case LEFT:
-                player.turnLeft();
+                player.turn(direction);
                 break;
         }
 
+    }
+
+
+    public boolean[] sense() {
+        boolean[] sensing = new boolean[Direction.values().length * 2];
+
+        Player.Orientation playerOrientation = player.getOrientation();
+        for(int i=0; i<Direction.values().length; i++) {
+            Player.Orientation newOrientation = playerOrientation.turn(Direction.values()[i]);
+
+            sensing[2*i] = getCell(playerX + newOrientation.getX(), playerY + newOrientation.getY()) instanceof Food;
+            sensing[2*i + 1] = getCell(playerX + newOrientation.getX(), playerY + newOrientation.getY()) instanceof Poison;
+        }
+
+        return sensing;
     }
 
 
@@ -66,12 +78,12 @@ public class Board {
 
 
     public EmptyCell getCell(int x, int y) {
-        return board[x][y];
+        return board[(x+getSize()) % getSize()][(y+getSize()) % getSize()];
     }
 
 
 
     public enum Direction {
-       UP, RIGHT, LEFT, NONE;
+       UP, RIGHT, LEFT;
     }
 }
