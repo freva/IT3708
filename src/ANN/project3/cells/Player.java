@@ -7,7 +7,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
 public class Player extends EmptyCell {
-    private Direction direction = Direction.SOUTH;
+    private Orientation orientation = Orientation.SOUTH;
     private double[][] dynCoords = {{0.5, 0.85}, {0.85, 0.15}, {0.5, 0.3}, {0.15, 0.15}};
 
     @Override
@@ -23,7 +23,7 @@ public class Player extends EmptyCell {
 
         AffineTransform af = new AffineTransform();
         af.translate(offsetX + Project3.CELL_SIZE/2, offsetY + Project3.CELL_SIZE/2);
-        af.rotate(direction.angle());
+        af.rotate(orientation.angle());
         af.translate(-offsetX - Project3.CELL_SIZE/2, -offsetY - Project3.CELL_SIZE/2);
         polygon.transform(af);
 
@@ -34,12 +34,25 @@ public class Player extends EmptyCell {
     }
 
 
-    private enum Direction {
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public void turnRight() {
+        orientation = orientation.turnRight();
+    }
+
+    public void turnLeft() {
+        orientation = orientation.turnLeft();
+    }
+
+
+    public enum Orientation {
         NORTH(0, -1, Math.PI), EAST(1, 0, Math.PI*1.5), SOUTH(0, 1, 0), WEST(-1, 0, Math.PI*0.5);
 
         private int x, y;
         private double angle;
-        Direction(int x, int y, double angle) {
+        Orientation(int x, int y, double angle) {
             this.x = x;
             this.y = y;
             this.angle = angle;
@@ -55,6 +68,24 @@ public class Player extends EmptyCell {
 
         public double angle() {
             return angle;
+        }
+
+        public Orientation turnRight() {
+            return Orientation.values()[(indexOf()+1)%Orientation.values().length];
+        }
+
+        public Orientation turnLeft() {
+            return Orientation.values()[(indexOf()-1+Orientation.values().length)%Orientation.values().length];
+        }
+
+
+        private int indexOf() {
+            for(int i=0; i<Orientation.values().length; i++) {
+                if(Orientation.values()[i] == this)
+                    return i;
+            }
+
+            return -1;
         }
     }
 }
