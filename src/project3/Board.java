@@ -51,6 +51,7 @@ public class Board {
             case RIGHT:
             case LEFT:
                 player.turn(direction);
+                move(Direction.UP);
                 break;
         }
 
