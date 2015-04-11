@@ -2,8 +2,8 @@ package generics.ANN;
 
 public class Node {
     private ActivationFunction activationFunction;
-    private double weights[], inputs[];
-    private double biasWeight = 0, biasInput = 0;
+    private double[] weights, inputs;
+    private double biasWeight = 0;
 
     public Node(ActivationFunction activationFunction){
         this.activationFunction = activationFunction;
@@ -29,11 +29,6 @@ public class Node {
     }
 
 
-    public void setBiasInput(double biasIn){
-        this.biasInput = biasIn;
-    }
-
-
     public void setBiasWeight(double biasW){
         this.biasWeight = biasW;
     }
@@ -48,8 +43,8 @@ public class Node {
         double sum = 0;
 
         for (int i=0; i<inputs.length; i++)
-            sum += inputs[i]* weights[i];
+            sum += inputs[i] * weights[i];
 
-        return sum + biasInput * biasWeight;
+        return sum + biasWeight;
     }
 }
