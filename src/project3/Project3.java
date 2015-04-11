@@ -17,6 +17,5 @@ public class Project3 extends JPanel {
         game.add(p);
         game.setLocationRelativeTo(null);
         game.setVisible(true);
-        game.addKeyListener(p);
     }
 }

@@ -2,12 +2,8 @@ package project3;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Arrays;
 
-
-public class Flatland extends JPanel implements KeyListener {
+public class Flatland extends JPanel {
     private Board board;
 
 
@@ -17,35 +13,9 @@ public class Flatland extends JPanel implements KeyListener {
         this.board = board;
     }
 
+
     public Flatland(int dimension, double probPoison, double probFood) {
         this(new Board(dimension, probPoison, probFood));
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        switch(keyCode) {
-            case KeyEvent.VK_UP:
-                board.move(Board.Direction.UP);
-                break;
-            case KeyEvent.VK_LEFT:
-                board.move(Board.Direction.LEFT);
-                break;
-            case KeyEvent.VK_RIGHT :
-                board.move(Board.Direction.RIGHT);
-                break;
-        }
-        repaint();
-        System.out.println(Arrays.toString(board.sense()));
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
     }
 
 
