@@ -18,20 +18,19 @@ public class Flatland extends JPanel {
 
 
     public Flatland() {
-        setBackground(Color.DARK_GRAY);
         setLayout(null);
+        setBackground(null);
     }
 
 
     public void runSimulation(int boardSize) {
-        Board simulationBoard = new Board(boardSize, 1.0/3, 1.0/3);
-
         int popSize = 200, probSize = 18;
         int[] structure = new int[]{6, 3};
-        ActivationFunction.setThreshold(0.5);
 
+        Board simulationBoard = new Board(boardSize, 1.0/3, 1.0/3);
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, probSize, structure, simulationBoard);
         ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 200, 0.5, 0.9, 0.8, init);
+
         for(int generation=0; generation<20; generation++) {
             board = simulationBoard.getClone();
             ea.runGeneration();

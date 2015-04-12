@@ -18,7 +18,7 @@ public enum ActivationFunction {
                 return 1.0/(1 + Math.exp(-value));
 
             case HYPERBOLIC:
-                return 0;
+                return (Math.exp(2*value)-1)/(Math.exp(2*value)+1);
 
             default:
                 return 0;
