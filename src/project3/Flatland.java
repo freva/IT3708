@@ -7,20 +7,21 @@ public class Flatland extends JPanel {
     private Board board;
 
 
-    public Flatland(Board board) {
+    public Flatland() {
         setBackground(Color.DARK_GRAY);
         setLayout(null);
-        this.board = board;
     }
 
 
-    public Flatland(int dimension, double probPoison, double probFood) {
-        this(new Board(dimension, probPoison, probFood));
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
 
     public void paint(Graphics g) {
         super.paint(g);
+
+        if(board == null) return;
         for (int i=0; i<board.getSize(); i++) {
             for (int j=0; j<board.getSize(); j++) {
                 if (board.getCell(i, j) != null)

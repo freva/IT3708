@@ -1,21 +1,16 @@
 package generics.ANN;
 
+import java.util.Arrays;
+
 public class Node {
     private ActivationFunction activationFunction;
     private double[] weights, inputs;
     private double biasWeight = 0;
 
-    public Node(ActivationFunction activationFunction){
+
+    public Node(ActivationFunction activationFunction, double[] weights) {
         this.activationFunction = activationFunction;
-    }
-
-
-    public void setInputs(boolean newInput[]){
-        inputs = new double[newInput.length];
-
-        for (int i=0; i<newInput.length; i++) {
-            inputs[i] = newInput[i] ? 1:0;
-        }
+        this.weights = weights;
     }
 
 
@@ -46,5 +41,10 @@ public class Node {
             sum += inputs[i] * weights[i];
 
         return sum + biasWeight;
+    }
+
+
+    public String toString() {
+        return "Node: " + Arrays.toString(weights) + " " + Arrays.toString(inputs);
     }
 }

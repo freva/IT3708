@@ -4,7 +4,7 @@ public enum ActivationFunction {
     THRESHOLD, SIGMOID, HYPERBOLIC;
 
     private static double threshold = 0;
-    public void setThreshold(double threshold) {
+    public static void setThreshold(double threshold) {
         ActivationFunction.threshold = threshold;
     }
 
@@ -12,7 +12,7 @@ public enum ActivationFunction {
     public double compute(double value) {
         switch (this) {
             case THRESHOLD:
-                return value >= threshold ? 1 :  -1;
+                return value >= threshold ? 1 :  0;
 
             case SIGMOID:
                 return 1.0/(1 + Math.exp(-value));

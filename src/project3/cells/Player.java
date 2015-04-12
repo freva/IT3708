@@ -11,6 +11,15 @@ public class Player extends EmptyCell {
     private Orientation orientation = Orientation.SOUTH;
     private double[][] dynCoords = {{0.5, 0.85}, {0.85, 0.15}, {0.5, 0.3}, {0.15, 0.15}};
 
+
+    public Player () {}
+
+
+    private Player(Orientation orientation) {
+        this.orientation = orientation;
+    }
+
+
     @Override
     public void draw(Graphics g, int offsetX, int offsetY) {
         super.draw(g, offsetX, offsetY);
@@ -34,6 +43,10 @@ public class Player extends EmptyCell {
         g2.draw(polygon);
     }
 
+
+    public Player getClone() {
+        return new Player(orientation);
+    }
 
     public Orientation getOrientation() {
         return orientation;
