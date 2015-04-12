@@ -6,24 +6,32 @@ import project3.cells.Player;
 import project3.cells.Poison;
 
 public class Board {
-    private int playerX, playerY, foodCounter, poisonCounter;
+    private static final double POISON_COST = -5, FOOD_COST = 1;
+
+    private double scoreOffset, scoreWidth;
+    private int playerX, playerY, foodEaten, poisonEaten;
     private EmptyCell[][] board;
     private Player player;
 
 
     public Board(int dimension, double probPoison, double probFood) {
+        int totalFood = 0, totalPoison = 0;
         board = new EmptyCell[dimension][dimension];
 
         for(int i=0; i<dimension; i++) {
             for(int j=0; j<dimension; j++) {
-                if(Math.random() < probFood)
+                if(Math.random() < probFood) {
                     board[i][j] = new Food();
-                else if(Math.random() < probPoison)
+                    totalFood++;
+                } else if(Math.random() < probPoison) {
                     board[i][j] = new Poison();
-                else
+                    totalPoison++;
+                } else
                     board[i][j] = new EmptyCell();
             }
         }
+        scoreOffset = -totalPoison*POISON_COST;
+        scoreWidth = scoreOffset + totalFood*FOOD_COST;
 
         playerX = (int) (Math.random()*dimension);
         playerY = (int) (Math.random()*dimension);
@@ -32,11 +40,13 @@ public class Board {
     }
 
 
-    private Board(EmptyCell[][] board, Player player, int playerX, int playerY) {
+    private Board(EmptyCell[][] board, Player player, int playerX, int playerY, double scoreOffset, double scoreWidth) {
         this.board = board;
         this.player = player;
         this.playerX = playerX;
         this.playerY = playerY;
+        this.scoreWidth = scoreWidth;
+        this.scoreOffset = scoreOffset;
     }
 
 
@@ -49,9 +59,9 @@ public class Board {
 
                 EmptyCell targetCell = getCell(playerX, playerY);
                 if(targetCell instanceof Food)
-                    foodCounter++;
+                    foodEaten++;
                 else if(targetCell instanceof Poison)
-                    poisonCounter++;
+                    poisonEaten++;
 
                 board[playerX][playerY] = player;
                 break;
@@ -91,15 +101,11 @@ public class Board {
         for(int i = 0; i < board.length; i++)
             boardCopy[i] = board[i].clone();
 
-        return new Board(boardCopy, player.getClone(), playerX, playerY);
+        return new Board(boardCopy, player.getClone(), playerX, playerY, scoreOffset, scoreWidth);
     }
 
-    public int getFoodCounter() {
-        return foodCounter;
-    }
-
-    public int getPoisonCounter() {
-        return poisonCounter;
+    public double getBoardScore() {
+        return (scoreOffset + FOOD_COST * foodEaten + POISON_COST * poisonEaten) / scoreWidth;
     }
 
     public EmptyCell getCell(int x, int y) {

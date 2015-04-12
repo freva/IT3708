@@ -5,8 +5,6 @@ import generics.ANN.ActivationFunction;
 import generics.EA.GenericGenoPhenom;
 
 public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
-    public static final double POISON_COST = -5, FOOD_COST = 1;
-
     private ActivationFunction af;
     private Board board;
     private int[] structure;
@@ -57,7 +55,7 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
                 newBoard.move(Board.Direction.values()[bestOut]);
             }
 
-            fitness = POISON_COST * newBoard.getPoisonCounter() + FOOD_COST * newBoard.getFoodCounter();
+            fitness = newBoard.getBoardScore();
         }
 
         return fitness;
