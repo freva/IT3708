@@ -10,7 +10,7 @@ import java.util.List;
 
 public class EvolutionaryAlgorithm {
     private List<GenericGenoPhenom> adults = new ArrayList<>(), children;
-    private int populationSize, generation = 1;
+    private int populationSize, generation = 0;
     private double crossoverRate, mutationRate, crossoverSplit;
     private AdultSelection adultSelection;
     private ParentSelection parentSelection;

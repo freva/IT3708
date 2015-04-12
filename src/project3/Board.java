@@ -9,7 +9,7 @@ public class Board {
     private static final double POISON_COST = -5, FOOD_COST = 1;
 
     private double scoreOffset, scoreWidth;
-    private int playerX, playerY, foodEaten, poisonEaten;
+    private int playerX, playerY, foodEaten, poisonEaten, moves;
     private EmptyCell[][] board;
     private Player player;
 
@@ -64,6 +64,7 @@ public class Board {
                     poisonEaten++;
 
                 board[playerX][playerY] = player;
+                moves++;
                 break;
 
             case RIGHT:
@@ -95,6 +96,17 @@ public class Board {
         return board.length;
     }
 
+    public int getFoodEaten() {
+        return foodEaten;
+    }
+
+    public int getPoisonEaten() {
+        return poisonEaten;
+    }
+
+    public int getNumberOfMoves() {
+        return moves;
+    }
 
     public Board getClone() {
         EmptyCell[][] boardCopy = new EmptyCell[board.length][];

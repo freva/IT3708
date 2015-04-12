@@ -50,9 +50,8 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
             for (int i = 0; i < 60; i++) {
                 getPhenom().propagateInput(newBoard.sense());
                 double[] output = getPhenom().getOutput();
-                int bestOut = getLargestIndex(output);
 
-                newBoard.move(Board.Direction.values()[bestOut]);
+                newBoard.move(getBestMove(output));
             }
 
             fitness = newBoard.getBoardScore();
@@ -72,7 +71,7 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
     }
 
 
-    public static int getLargestIndex(double[] arr) {
+    public static Board.Direction getBestMove(double[] arr) {
         int pos = 0;
 
         for(int i=1; i<arr.length; i++) {
@@ -80,6 +79,6 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
                 pos = i;
         }
 
-        return pos;
+        return Board.Direction.values()[pos];
     }
 }
