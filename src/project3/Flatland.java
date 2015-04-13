@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Flatland extends JPanel {
     public static final int INFO_BOARD_HEIGHT = 25;
-    private EvolutionaryAlgorithm ea;
+    private static Board[] boards;
     private Board board;
     private int boardNum;
 
@@ -24,29 +24,37 @@ public class Flatland extends JPanel {
     }
 
 
-    public void runSimulation(int numBoards) {
+    public void runSimulation(int numBoards, boolean isStatic) {
         int popSize = 200, probSize = 18;
         int[] structure = new int[]{6, 3};
 
-        Board[] simulationBoards = new Board[numBoards];
-        for(int i=0; i<numBoards; i++)
-            simulationBoards[i] = new Board(10, 1.0/3, 1.0/3);
+        ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, probSize, structure);
+        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 400, 0.5, 0.9, 0.8, init);
 
-        ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, probSize, structure, simulationBoards);
-        ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 200, 0.5, 0.9, 0.8, init);
+        for(int generation=0; generation<50; generation++) {
+            if(boards == null || !isStatic) {
+                boards = new Board[numBoards];
+                for(int i=0; i<numBoards; i++)
+                    boards[i] = new Board(10, 1.0/3, 1.0/3);
 
-        for(int generation=0; generation<100; generation++) {
+                ArrayList<GenericGenoPhenom> adults = ea.getAdults();
+                for(GenericGenoPhenom ggp: adults)
+                    ((WeightNode) ggp).resetFitness();
+            }
+
             ea.runGeneration();
             System.out.println(ea);
         }
 
 
         ANN ann = (ANN) ea.getBestNode().getPhenom();
-        simulateBestChild(ann, simulationBoards);
+        simulateBestChild(ann);
     }
 
 
-    private void simulateBestChild(ANN ann, Board[] boards) {
+    private void simulateBestChild(ANN ann) {
+        Project3.setUpGUI(this);
+
         for(int j=0; j<boards.length; j++) {
             board = boards[j].getClone();
             boardNum = j+1;
@@ -68,7 +76,7 @@ public class Flatland extends JPanel {
     }
 
 
-    private static ArrayList<GenericGenoPhenom> generateInitialPopulation(int popSize, int probSize, int[] structure, Board[] boards) {
+    private static ArrayList<GenericGenoPhenom> generateInitialPopulation(int popSize, int probSize, int[] structure) {
         ArrayList<GenericGenoPhenom> init = new ArrayList<>();
 
         for(int i=0; i<popSize; i++) {
@@ -77,17 +85,21 @@ public class Flatland extends JPanel {
             for(int j=0; j<probSize; j++)
                 weights[j] = Math.random();
 
-            init.add(new WeightNode(structure, weights, ActivationFunction.SIGMOID, boards));
+            init.add(new WeightNode(structure, weights, ActivationFunction.SIGMOID));
         }
 
         return init;
     }
 
 
+    public static Board[] getBoards() {
+        return boards;
+    }
+
+
     public void paint(Graphics g) {
         super.paint(g);
 
-        if(board == null || ea == null) return;
         g.setColor(Color.WHITE);
         g.setFont(new Font("Dialog", Font.PLAIN, 20));
         g.drawString("Board: " + boardNum + " | Moves: " + board.getNumberOfMoves() + " | Food: " + board.getFoodEaten() + " | Poison: " + board.getPoisonEaten(), 10, 22);

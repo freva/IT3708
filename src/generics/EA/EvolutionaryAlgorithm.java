@@ -87,4 +87,8 @@ public class EvolutionaryAlgorithm {
     public double getAverageFitness() {
         return adults.parallelStream().mapToDouble(GenericGenoPhenom::fitnessEvaluation).average().getAsDouble();
     }
+
+    public ArrayList<GenericGenoPhenom> getAdults() {
+        return new ArrayList<>(adults);
+    }
 }

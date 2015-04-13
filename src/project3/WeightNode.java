@@ -6,14 +6,12 @@ import generics.EA.GenericGenoPhenom;
 
 public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
     private ActivationFunction af;
-    private Board[] boards;
     private int[] structure;
     private double fitness = Double.MIN_VALUE;
 
-    public WeightNode(int[] structure, Double[] geno, ActivationFunction af, Board[] boards) {
+    public WeightNode(int[] structure, Double[] geno, ActivationFunction af) {
         super(geno);
         this.af = af;
-        this.boards = boards;
         this.structure = structure;
     }
 
@@ -30,7 +28,7 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
         System.arraycopy(getGeno(), 0, out, 0, crossoverPoint);
         System.arraycopy(other.getGeno(), crossoverPoint, out, crossoverPoint, getGeno().length - crossoverPoint);
 
-        return new WeightNode(structure, out, af, boards);
+        return new WeightNode(structure, out, af);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
 
         int mutatePoint = (int) (Math.random()*out.length);
         out[mutatePoint] = Math.random();
-        return new WeightNode(structure, out, af, boards);
+        return new WeightNode(structure, out, af);
     }
 
     @Override
@@ -47,7 +45,7 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
         if(fitness == Double.MIN_VALUE) {
             double sumFitness = 0;
 
-            for(Board board : boards) {
+            for(Board board : Flatland.getBoards()) {
                 Board newBoard = board.getClone();
 
                 for (int i = 0; i < 60; i++) {
@@ -60,10 +58,15 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
                 sumFitness += newBoard.getBoardScore();
             }
 
-            fitness = sumFitness/boards.length;
+            fitness = sumFitness/Flatland.getBoards().length;
         }
 
         return fitness;
+    }
+
+
+    public void resetFitness() {
+        fitness = Double.MIN_VALUE;
     }
 
 
