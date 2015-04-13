@@ -19,8 +19,8 @@ public class Project3 extends JPanel {
 
 
         Flatland flatland = new Flatland();
-        frame.add(flatland);
+        frame.getContentPane().add(flatland);
 
-        flatland.runSimulation(BOARD_DIMENSION);
+        flatland.runSimulation(5);
     }
 }

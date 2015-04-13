@@ -6,14 +6,14 @@ import generics.EA.GenericGenoPhenom;
 
 public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
     private ActivationFunction af;
-    private Board board;
+    private Board[] boards;
     private int[] structure;
     private double fitness = Double.MIN_VALUE;
 
-    public WeightNode(int[] structure, Double[] geno, ActivationFunction af, Board board) {
+    public WeightNode(int[] structure, Double[] geno, ActivationFunction af, Board[] boards) {
         super(geno);
         this.af = af;
-        this.board = board;
+        this.boards = boards;
         this.structure = structure;
     }
 
@@ -30,7 +30,7 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
         System.arraycopy(getGeno(), 0, out, 0, crossoverPoint);
         System.arraycopy(other.getGeno(), crossoverPoint, out, crossoverPoint, getGeno().length - crossoverPoint);
 
-        return new WeightNode(structure, out, af, board);
+        return new WeightNode(structure, out, af, boards);
     }
 
     @Override
@@ -39,22 +39,28 @@ public class WeightNode extends GenericGenoPhenom<Double[], ANN> {
 
         int mutatePoint = (int) (Math.random()*out.length);
         out[mutatePoint] = Math.random();
-        return new WeightNode(structure, out, af, board);
+        return new WeightNode(structure, out, af, boards);
     }
 
     @Override
     public double fitnessEvaluation() {
         if(fitness == Double.MIN_VALUE) {
-            Board newBoard = board.getClone();
+            double sumFitness = 0;
 
-            for (int i = 0; i < 60; i++) {
-                getPhenom().propagateInput(newBoard.sense());
-                double[] output = getPhenom().getOutput();
+            for(Board board : boards) {
+                Board newBoard = board.getClone();
 
-                newBoard.move(getBestMove(output));
+                for (int i = 0; i < 60; i++) {
+                    getPhenom().propagateInput(newBoard.sense());
+                    double[] output = getPhenom().getOutput();
+
+                    newBoard.move(getBestMove(output));
+                }
+
+                sumFitness += newBoard.getBoardScore();
             }
 
-            fitness = newBoard.getBoardScore();
+            fitness = sumFitness/boards.length;
         }
 
         return fitness;
