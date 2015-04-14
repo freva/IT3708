@@ -2,16 +2,16 @@ package project3;
 
 import project3.cells.EmptyCell;
 import project3.cells.Food;
-import project3.cells.Player;
+import project3.cells.Agent;
 import project3.cells.Poison;
 
 public class Board {
     private static final double POISON_COST = -5, FOOD_COST = 1;
 
     private double scoreOffset, scoreWidth;
-    private int playerX, playerY, foodEaten, poisonEaten, moves;
+    private int agentX, agentY, foodEaten, poisonEaten, moves;
     private EmptyCell[][] board;
-    private Player player;
+    private Agent agent;
 
 
     public Board(int dimension, double probPoison, double probFood) {
@@ -33,18 +33,18 @@ public class Board {
         scoreOffset = -totalPoison*POISON_COST;
         scoreWidth = scoreOffset + totalFood*FOOD_COST;
 
-        playerX = (int) (Math.random()*dimension);
-        playerY = (int) (Math.random()*dimension);
-        player = new Player();
-        board[playerX][playerY] = player;
+        agentX = (int) (Math.random()*dimension);
+        agentY = (int) (Math.random()*dimension);
+        agent = new Agent();
+        board[agentX][agentY] = agent;
     }
 
 
-    private Board(EmptyCell[][] board, Player player, int playerX, int playerY, double scoreOffset, double scoreWidth) {
+    private Board(EmptyCell[][] board, Agent agent, int agentX, int agentY, double scoreOffset, double scoreWidth) {
         this.board = board;
-        this.player = player;
-        this.playerX = playerX;
-        this.playerY = playerY;
+        this.agent = agent;
+        this.agentX = agentX;
+        this.agentY = agentY;
         this.scoreWidth = scoreWidth;
         this.scoreOffset = scoreOffset;
     }
@@ -53,23 +53,23 @@ public class Board {
     public void move(Direction direction) {
         switch (direction) {
             case UP:
-                board[playerX][playerY] = new EmptyCell();
-                playerX = (playerX + player.getOrientation().getX() + getSize())%getSize();
-                playerY = (playerY + player.getOrientation().getY() + getSize())%getSize();
+                board[agentX][agentY] = new EmptyCell();
+                agentX = (agentX + agent.getOrientation().getX() + getSize())%getSize();
+                agentY = (agentY + agent.getOrientation().getY() + getSize())%getSize();
 
-                EmptyCell targetCell = getCell(playerX, playerY);
+                EmptyCell targetCell = getCell(agentX, agentY);
                 if(targetCell instanceof Food)
                     foodEaten++;
                 else if(targetCell instanceof Poison)
                     poisonEaten++;
 
-                board[playerX][playerY] = player;
+                board[agentX][agentY] = agent;
                 moves++;
                 break;
 
             case RIGHT:
             case LEFT:
-                player.turn(direction);
+                agent.turn(direction);
                 move(Direction.UP);
                 break;
         }
@@ -80,12 +80,12 @@ public class Board {
     public double[] sense() {
         double[] sensing = new double[Direction.values().length * 2];
 
-        Player.Orientation playerOrientation = player.getOrientation();
+        Agent.Orientation agentOrientation = agent.getOrientation();
         for(int i=0; i<Direction.values().length; i++) {
-            Player.Orientation newOrientation = playerOrientation.turn(Direction.values()[i]);
+            Agent.Orientation newOrientation = agentOrientation.turn(Direction.values()[i]);
 
-            sensing[2*i] = getCell(playerX + newOrientation.getX(), playerY + newOrientation.getY()) instanceof Food ? 1 : 0;
-            sensing[2*i + 1] = getCell(playerX + newOrientation.getX(), playerY + newOrientation.getY()) instanceof Poison ? 1 : 0;
+            sensing[2*i] = getCell(agentX + newOrientation.getX(), agentY + newOrientation.getY()) instanceof Food ? 1 : 0;
+            sensing[2*i + 1] = getCell(agentX + newOrientation.getX(), agentY + newOrientation.getY()) instanceof Poison ? 1 : 0;
         }
 
         return sensing;
@@ -113,7 +113,7 @@ public class Board {
         for(int i = 0; i < board.length; i++)
             boardCopy[i] = board[i].clone();
 
-        return new Board(boardCopy, player.getClone(), playerX, playerY, scoreOffset, scoreWidth);
+        return new Board(boardCopy, agent.getClone(), agentX, agentY, scoreOffset, scoreWidth);
     }
 
     public double getBoardScore() {

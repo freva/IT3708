@@ -7,15 +7,13 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
-public class Player extends EmptyCell {
+public class Agent extends EmptyCell {
     private Orientation orientation = Orientation.SOUTH;
     private double[][] dynCoords = {{0.5, 0.85}, {0.85, 0.15}, {0.5, 0.3}, {0.15, 0.15}};
 
+    public Agent() {}
 
-    public Player () {}
-
-
-    private Player(Orientation orientation) {
+    private Agent(Orientation orientation) {
         this.orientation = orientation;
     }
 
@@ -44,8 +42,8 @@ public class Player extends EmptyCell {
     }
 
 
-    public Player getClone() {
-        return new Player(orientation);
+    public Agent getClone() {
+        return new Agent(orientation);
     }
 
     public Orientation getOrientation() {
