@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Project3 {
-    public static final int BOARD_DIMENSION = 10, CELL_SIZE = 80;
+    public static final int BOARD_DIMENSION = 10, CELL_SIZE = 60;
 
     public static void main(String[] args) {
-        new Flatland().runSimulation(1, false);
+        new Flatland().runSimulation(Integer.parseInt(args[0]), args[1].equals("static"));
     }
 
 

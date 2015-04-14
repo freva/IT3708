@@ -67,7 +67,7 @@ public class Flatland extends JPanel {
                 repaint();
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(150);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -100,6 +100,7 @@ public class Flatland extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
 
+        if(board == null) return;
         g.setColor(Color.WHITE);
         g.setFont(new Font("Dialog", Font.PLAIN, 20));
         g.drawString("Board: " + boardNum + " | Moves: " + board.getNumberOfMoves() + " | Food: " + board.getFoodEaten() + " | Poison: " + board.getPoisonEaten(), 10, 22);
