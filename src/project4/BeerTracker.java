@@ -13,6 +13,11 @@ public class BeerTracker extends JPanel {
     }
 
 
+    public void runSimulation() {
+
+    }
+
+
     public void paint(Graphics g) {
         super.paint(g);
 

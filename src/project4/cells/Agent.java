@@ -10,6 +10,14 @@ public class Agent {
     private int x = (int) (Math.random()*(Board.DIMENSION_X-AGENT_LENGTH));
 
 
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
     public void draw(Graphics g, int offsetX, int offsetY) {
         g.setColor(Color.BLUE);
 
