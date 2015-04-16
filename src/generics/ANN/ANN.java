@@ -4,16 +4,16 @@ import java.util.Arrays;
 
 
 public class ANN {
-    private Node[][] network;
+    private ANNNode[][] network;
 
     public ANN(int[] structure, double[] weights, ActivationFunction af) {
-        network = new Node[structure.length-1][];
+        network = new ANNNode[structure.length-1][];
 
         for(int i=1, offset=0; i<structure.length; i++) {
-            network[i-1] = new Node[structure[i]];
+            network[i-1] = new ANNNode[structure[i]];
 
             for(int j=0; j<structure[i]; j++, offset+=structure[i-1]) {
-                network[i-1][j] = new Node(af, Arrays.copyOfRange(weights, offset, offset+structure[i-1]));
+                network[i-1][j] = new ANNNode(af, Arrays.copyOfRange(weights, offset, offset+structure[i-1]));
             }
         }
     }
@@ -22,7 +22,7 @@ public class ANN {
     public void propagateInput(double[] inputs){
         double[] currentOut = inputs.clone();
 
-        for (Node[] layer : network) {
+        for (ANNNode[] layer : network) {
             double[] newLayer = new double[layer.length];
             for (int j=0; j<layer.length; j++) {
                 layer[j].setInputs(currentOut);

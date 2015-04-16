@@ -2,13 +2,13 @@ package generics.ANN;
 
 import java.util.Arrays;
 
-public class Node {
-    private ActivationFunction activationFunction;
-    private double[] weights, inputs;
-    private double biasWeight = 0;
+public class ANNNode {
+    protected ActivationFunction activationFunction;
+    protected double[] weights, inputs;
+    protected double biasWeight = 0;
 
 
-    public Node(ActivationFunction activationFunction, double[] weights) {
+    public ANNNode(ActivationFunction activationFunction, double[] weights) {
         this.activationFunction = activationFunction;
         this.weights = weights;
     }
