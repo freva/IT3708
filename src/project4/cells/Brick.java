@@ -1,17 +1,39 @@
 package project4.cells;
 
+import project4.Board;
 import project4.Project4;
 
 import java.awt.*;
 
 public class Brick {
-    private int brickLength, x, y=0;
+    private int brickLength, x, y;
 
-    public Brick(int x, int brickLength) {
-        this.brickLength = brickLength;
-        this.x = x;
+    public Brick() {
+        refresh();
     }
 
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void tick() {
+        y++;
+    }
+
+    public void refresh() {
+        brickLength = 1 + (int) (Math.random()*6);
+        x = (int) (Math.random()*(Board.DIMENSION_X-brickLength));
+        y = 0;
+    }
+
+    public int getBrickLength() {
+        return brickLength;
+    }
 
     public void draw(Graphics g, int offsetX, int offsetY) {
         g.setColor(Color.RED);
