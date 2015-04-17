@@ -9,10 +9,10 @@ public class CTRNNNode extends ANNNode {
     private double internalState = 0, timeConstant, gain;
 
 
-    public CTRNNNode(ActivationFunction activationFunction, double[] weights, double timeConstant, double gain) {
-        super(activationFunction, weights);
-        this.timeConstant = timeConstant;
-        this.gain = gain;
+    public CTRNNNode(ActivationFunction activationFunction, double[] weights) {
+        super(activationFunction, Arrays.copyOfRange(weights, 2, weights.length-1));
+        this.timeConstant = weights[0];
+        this.gain = weights[1];
     }
 
 

@@ -4,7 +4,9 @@ import java.util.Arrays;
 
 
 public class ANN {
-    private ANNNode[][] network;
+    protected ANNNode[][] network;
+
+    protected ANN() {}
 
     public ANN(int[] structure, double[] weights, ActivationFunction af) {
         network = new ANNNode[structure.length-1][];
