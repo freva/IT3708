@@ -37,6 +37,16 @@ public class Board {
     public void move(Action action) {
         agent.setX((agent.getX()+action.getVector()+DIMENSION_X)%DIMENSION_X);
         numberOfTicks++;
+
+        brick.tick();
+
+        if(brick.getY() == DIMENSION_Y-1) {
+            if(agent.getX()<=brick.getX() && brick.getX()+brick.getBrickLength()<=agent.getX()+Agent.AGENT_LENGTH && brick.getBrickLength() < 5)
+                numberOfIntercepts++;
+            else if(brick.getBrickLength() >= 5 && (brick.getX()+brick.getBrickLength()<agent.getX() || agent.getX()+Agent.AGENT_LENGTH<brick.getX()))
+                numberOfAvoided++;
+            brick.refresh();
+        }
     }
 
 
