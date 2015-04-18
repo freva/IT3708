@@ -8,7 +8,6 @@ public class Project4 {
 
     public static void main(String[] args) {
         BeerTracker bt = new BeerTracker();
-        setUpGUI(bt);
         bt.runSimulation();
     }
 

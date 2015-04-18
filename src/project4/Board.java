@@ -7,10 +7,18 @@ import java.awt.*;
 
 
 public class Board {
+    private static final double INTERCEPT_COST = 2, AVOID_COST = 1;
     public static final int DIMENSION_X = 30, DIMENSION_Y = 10;
     private int numberOfIntercepts, numberOfAvoided, numberOfTicks;
     private Agent agent = new Agent();
     private Brick brick = new Brick();
+
+    public Board() {}
+
+    public Board(Brick brick, Agent agent) {
+        this.brick = brick;
+        this.agent = agent;
+    }
 
 
     public int getNumberOfIntercepted() {
@@ -28,6 +36,7 @@ public class Board {
 
     public void move(Action action) {
         agent.setX((agent.getX()+action.getVector()+DIMENSION_X)%DIMENSION_X);
+        numberOfTicks++;
     }
 
 
@@ -56,6 +65,13 @@ public class Board {
         brick.draw(g, offsetX, offsetY);
     }
 
+    public Board getClone() {
+        return new Board(brick.getClone(), agent.getClone());
+    }
+
+    public double getBoardScore() {
+        return INTERCEPT_COST * numberOfIntercepts + AVOID_COST * numberOfAvoided;
+    }
 
     public enum Action {
         FOUR_TO_LEFT(-4), THREE_TO_LEFT(-3), TWO_TO_LEFT(-2), ONE_TO_LEFT(-1), NONE(0), ONE_TO_RIGHT(1), TWO_TO_RIGHT(2), THREE_TO_RIGHT(3), FOUR_TO_RIGHT(4);

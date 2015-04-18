@@ -12,6 +12,12 @@ public class Brick {
         refresh();
     }
 
+    public Brick(int x, int y, int brickLength) {
+        this.brickLength = brickLength;
+        this.x = x;
+        this.y = y;
+    }
+
 
     public int getX() {
         return x;
@@ -33,6 +39,10 @@ public class Brick {
 
     public int getBrickLength() {
         return brickLength;
+    }
+
+    public Brick getClone() {
+        return new Brick(x, y, brickLength);
     }
 
     public void draw(Graphics g, int offsetX, int offsetY) {

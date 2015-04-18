@@ -10,9 +10,10 @@ public class CTRNNNode extends ANNNode {
 
 
     public CTRNNNode(ActivationFunction activationFunction, double[] weights) {
-        super(activationFunction, Arrays.copyOfRange(weights, 2, weights.length-1));
+        super(activationFunction, Arrays.copyOfRange(weights, 3, weights.length-1));
         this.timeConstant = weights[0];
         this.gain = weights[1];
+        this.setBiasWeight(weights[2]);
     }
 
 
