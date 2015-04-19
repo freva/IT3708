@@ -6,7 +6,7 @@ import project3.cells.Agent;
 import project3.cells.Poison;
 
 public class Board {
-    private static final double POISON_COST = -5, FOOD_COST = 1;
+    private static final double POISON_COST = -2, FOOD_COST = 1;
 
     private double scoreOffset, scoreWidth;
     private int agentX, agentY, foodEaten, poisonEaten, moves;

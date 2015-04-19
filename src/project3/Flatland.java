@@ -29,7 +29,7 @@ public class Flatland extends JPanel {
         int[] structure = new int[]{6, 3};
 
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, probSize, structure);
-        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 400, 0.5, 0.9, 0.8, init);
+        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, popSize, 0.9, 0.9, 0.8, init);
 
         for(int generation=0; generation<50; generation++) {
             if(boards == null || !isStatic) {
