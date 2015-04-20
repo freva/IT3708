@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Project4 {
-    public static final int CELL_SIZE = 60;
+    public static final int CELL_SIZE = 40;
 
     public static void main(String[] args) {
         BeerTracker bt = new BeerTracker();
