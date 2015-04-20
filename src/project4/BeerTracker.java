@@ -5,6 +5,7 @@ import generics.EA.EvolutionaryAlgorithm;
 import generics.EA.GenericGenoPhenom;
 import generics.EA.selection.AdultSelection;
 import generics.EA.selection.ParentSelection;
+import project4.cells.Agent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,19 +14,21 @@ import java.util.Arrays;
 
 public class BeerTracker extends JPanel {
     public static final int INFO_BOARD_HEIGHT = 25;
-    private static Board board = new Board();
+    private Board board = new Board();
+    private static Scenario scenario;
 
-    public BeerTracker() {
+    public BeerTracker(Scenario scenario) {
         setLayout(null);
         setBackground(null);
+
+        this.scenario = scenario;
     }
 
 
     public void runSimulation() {
         int popSize = 800;
-        int[] structure = new int[]{5, 2, 2};
 
-        ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, structure);
+        ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, scenario.getStructure());
         EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, popSize, 0.9, 0.9, 0.2, init);
 
         for(int generation=0; generation<50; generation++) {
@@ -52,7 +55,6 @@ public class BeerTracker extends JPanel {
 
             board.move(WeightNode.getBestMove(output));
             repaint();
-            board.tick();
 
             try {
                 Thread.sleep(150);
@@ -107,5 +109,34 @@ public class BeerTracker extends JPanel {
                 " | Misses: " + board.getNumberOfMisses(), 10, 22);
 
         board.draw(g, 0, INFO_BOARD_HEIGHT);
+    }
+
+    public static Scenario getScenario() {
+        return scenario;
+    }
+
+
+    public enum Scenario {
+        STANDARD(new int[]{5, 2, 2}, new double[]{1, 1, -1, -1}), PULL(new int[]{5, 2, 3}, new double[]{1, 1.5, -2, -1}), NO_WRAP(new int[]{7, 3, 2}, new double[]{1, 1, -1, -1});
+
+        private int[] structure;
+        private double[] rewards;
+        Scenario(int[] structure, double[] rewards) {
+            this.structure = structure;
+            this.rewards = rewards;
+        }
+
+        public int[] getStructure() {
+            return structure;
+        }
+
+        public double[] getRewards() {
+            return rewards;
+        }
+
+        public int getNewPosition(int curPos, int relChange) {
+            if(this == NO_WRAP) return Math.min(Math.max(curPos + relChange, 0), Board.DIMENSION_X-Agent.AGENT_LENGTH-1);
+            else return (curPos + relChange + Board.DIMENSION_X)%Board.DIMENSION_X;
+        }
     }
 }

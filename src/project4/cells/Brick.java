@@ -24,6 +24,10 @@ public class Brick {
         y++;
     }
 
+    public void pull() {
+        y = Board.DIMENSION_Y-1;
+    }
+
     public void refresh() {
         brickLength = 1 + (int) (Math.random()*6);
         x = (int) (Math.random()*(Board.DIMENSION_X-brickLength));

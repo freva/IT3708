@@ -116,6 +116,8 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
                 else
                     return Board.Action.THREE_TO_RIGHT;
 
+            case 2:
+                return Board.Action.PULL;
             default:
                 return Board.Action.NONE;
         }

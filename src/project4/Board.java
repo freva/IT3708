@@ -7,7 +7,6 @@ import java.awt.*;
 
 
 public class Board {
-    private static final double INTERCEPT_COST = 1, AVOID_COST = 1, CRASH_COST = -1, MISS_COST = -1;
     public static final int DIMENSION_X = 30, DIMENSION_Y = 15;
     private int numberOfIntercepts, numberOfAvoided, numberOfTicks, numberOfCrashes, numberOfMisses;
     private Agent agent = new Agent();
@@ -36,7 +35,8 @@ public class Board {
 
 
     public void move(Action action) {
-        agent.setX((agent.getX()+action.getVector()+DIMENSION_X)%DIMENSION_X);
+        if(action == Action.PULL) brick.pull();
+        else agent.setX(BeerTracker.getScenario().getNewPosition(agent.getX(), action.getVector()));
     }
 
 
@@ -59,12 +59,17 @@ public class Board {
     }
 
     public double[] sense() {
-        double[] sensing = new double[Agent.AGENT_LENGTH];
+        double[] sensing = new double[Agent.AGENT_LENGTH + (BeerTracker.getScenario() == BeerTracker.Scenario.NO_WRAP ? 2 : 0)];
 
         for(int i=0; i<Agent.AGENT_LENGTH; i++) {
             int posX = (agent.getX()+i)%DIMENSION_X;
 
             sensing[i] = posX >= brick.getX() && posX <= (brick.getX()+brick.getBrickLength())%DIMENSION_X ? 1 : 0;
+        }
+
+        if(BeerTracker.getScenario() == BeerTracker.Scenario.NO_WRAP) {
+            sensing[Agent.AGENT_LENGTH] = agent.getX() == 0 ? 1 : 0;
+            sensing[Agent.AGENT_LENGTH+1] = agent.getX() == DIMENSION_X-Agent.AGENT_LENGTH-1 ? 1 : 0;
         }
 
         return sensing;
@@ -81,10 +86,12 @@ public class Board {
 
         agent.draw(g, offsetX, offsetY + (DIMENSION_Y-1)*Project4.CELL_SIZE);
         brick.draw(g, offsetX, offsetY);
+        tick();
     }
 
     public double getBoardScore() {
-        return INTERCEPT_COST * numberOfIntercepts + AVOID_COST * numberOfAvoided + CRASH_COST * numberOfCrashes + MISS_COST * numberOfMisses;
+        double[] rewards = BeerTracker.getScenario().getRewards();
+        return rewards[0] * numberOfIntercepts + rewards[1] * numberOfAvoided + rewards[2] * numberOfCrashes + rewards[3] * numberOfMisses;
     }
 
     public enum Action {
