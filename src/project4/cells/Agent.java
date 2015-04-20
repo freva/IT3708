@@ -32,6 +32,7 @@ public class Agent {
         g.setColor(Color.BLUE);
 
         for(int i=0; i<AGENT_LENGTH; i++)
-            g.fillRect(offsetX + (x+i)*Project4.CELL_SIZE + (int) (Project4.CELL_SIZE * 0.15), offsetY + (int) (Project4.CELL_SIZE * 0.15), (int) (0.7 * Project4.CELL_SIZE), (int) (0.7 * Project4.CELL_SIZE));
+            g.fillRect(((offsetX + (x+i))%Board.DIMENSION_X)*Project4.CELL_SIZE + (int) (Project4.CELL_SIZE * 0.15),
+                    offsetY + (int) (Project4.CELL_SIZE * 0.15), (int) (0.7 * Project4.CELL_SIZE), (int) (0.7 * Project4.CELL_SIZE));
     }
 }
