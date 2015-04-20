@@ -1,10 +1,7 @@
 package project4;
 
-import generics.ANN.ActivationFunction;
 import generics.CTRNN.CTRNN;
 import generics.EA.GenericGenoPhenom;
-
-import java.util.Arrays;
 
 
 public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
@@ -87,13 +84,10 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
 
 
     public static Board.Action getBestMove(double[] arr) {
-        int pos = 0;
-
-        for(int i=1; i<arr.length; i++) {
-            if(arr[i] > arr[pos])
-                pos = i;
+        if(arr[0] < arr[1]) {
+            return Board.Action.getRightMoves()[((int) (arr[1]/(arr[0]+arr[1])/0.25-0.00001))];
+        } else {
+            return Board.Action.getLeftMoves()[((int) (arr[0]/(arr[0]+arr[1])/0.25-0.00001))];
         }
-
-        return Board.Action.values()[pos];
     }
 }

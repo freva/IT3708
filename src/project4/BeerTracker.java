@@ -1,6 +1,5 @@
 package project4;
 
-import generics.ANN.ActivationFunction;
 import generics.CTRNN.CTRNN;
 import generics.EA.EvolutionaryAlgorithm;
 import generics.EA.GenericGenoPhenom;
@@ -24,10 +23,10 @@ public class BeerTracker extends JPanel {
 
     public void runSimulation() {
         int popSize = 200;
-        int[] structure = new int[]{5, 9};
+        int[] structure = new int[]{5, 2, 2};
 
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, structure);
-        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 400, 0.5, 0.9, 0.8, init);
+        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 400, 0.9, 0.9, 0.8, init);
 
         for(int generation=0; generation<50; generation++) {
             ea.runGeneration();
@@ -41,6 +40,7 @@ public class BeerTracker extends JPanel {
 
 
     private void simulateBestChild(CTRNN ctrnn) {
+        System.out.println(ctrnn);
         Project4.setUpGUI(this);
 
         for (int i = 0; i < 600; i++) {
@@ -67,8 +67,8 @@ public class BeerTracker extends JPanel {
 
             for(int j=1, pos=0; j<structure.length; j++) {
                 for (int k = 0; k < structure[j]; k++, pos++) {
-                    weights[pos] = new Double[structure[j-1] + 3];
-                    for (int l = 0; l < structure[j - 1] + 3; l++)
+                    weights[pos] = new Double[structure[j] + structure[j-1] + 3];
+                    for (int l = 0; l < structure[j] + structure[j - 1] + 3; l++)
                         weights[pos][l] = getRandomWeight(l);
                 }
             }
@@ -102,7 +102,9 @@ public class BeerTracker extends JPanel {
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Dialog", Font.PLAIN, 20));
-        g.drawString("Tick: " + board.getNumberOfTicks() + " | Intercepted: " + board.getNumberOfIntercepted() + " | Avoided: " + board.getNumberOfAvoided(), 10, 22);
+        g.drawString("Tick: " + board.getNumberOfTicks() + " | Intercepted: " + board.getNumberOfIntercepted() +
+                " | Avoided: " + board.getNumberOfAvoided() + " | Crashed: " + board.getNumberOfCrashes() +
+                " | Misses: " + board.getNumberOfMisses(), 10, 22);
 
         board.draw(g, 0, INFO_BOARD_HEIGHT);
     }

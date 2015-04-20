@@ -6,7 +6,7 @@ import generics.ANN.ActivationFunction;
 import java.util.Arrays;
 
 public class CTRNNNode extends ANNNode {
-    private double internalState = 0, timeConstant, gain;
+    private double internalState = 0, timeConstant, gain = 0, lastOut;
 
 
     public CTRNNNode(double[] weights) {
@@ -20,11 +20,31 @@ public class CTRNNNode extends ANNNode {
     @Override
     public void setInputs(double newInput[]){
         inputs = newInput.clone();
+        lastOut = gain == 0 ? 0 : getOutput();
         internalState += 1/timeConstant * (-internalState + getNodeValue() + biasWeight);
     }
 
     @Override
     public double getOutput(){
         return activationFunction.compute(gain*internalState);
+    }
+
+    public double getLastOutput() {
+        return lastOut;
+    }
+
+
+    public String toString() {
+        String out = "";
+
+        out += "Internal state: " + internalState;
+        out += "\nGain: " + gain;
+        out += "\nTime constant: " + timeConstant;
+        out += "\nBias: " + biasWeight;
+
+        out += "\nWeights: " + Arrays.toString(weights);
+        out += "\nLast output: " + getLastOutput();
+        out += "\nCurrent output: " + getOutput();
+        return out;
     }
 }
