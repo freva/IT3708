@@ -7,9 +7,9 @@ import java.awt.*;
 
 
 public class Board {
-    private static final double INTERCEPT_COST = 2, AVOID_COST = 1;
+    private static final double INTERCEPT_COST = 1, AVOID_COST = 1, CRASH_COST = -1, MISS_COST = -1;
     public static final int DIMENSION_X = 30, DIMENSION_Y = 10;
-    private int numberOfIntercepts, numberOfAvoided, numberOfTicks;
+    private int numberOfIntercepts, numberOfAvoided, numberOfTicks, numberOfCrashes, numberOfMisses;
     private Agent agent = new Agent();
     private Brick brick = new Brick();
 
@@ -29,6 +29,14 @@ public class Board {
         return numberOfAvoided;
     }
 
+    public int getNumberOfCrashes() {
+        return numberOfCrashes;
+    }
+
+    public int getNumberOfMisses() {
+        return numberOfMisses;
+    }
+
     public int getNumberOfTicks() {
         return numberOfTicks;
     }
@@ -41,14 +49,19 @@ public class Board {
         brick.tick();
 
         if(brick.getY() == DIMENSION_Y-1) {
-            if(agent.getX()<=brick.getX() && brick.getX()+brick.getBrickLength()<=agent.getX()+Agent.AGENT_LENGTH && brick.getBrickLength() < 5)
-                numberOfIntercepts++;
-            else if(brick.getBrickLength() >= 5 && (brick.getX()+brick.getBrickLength()<agent.getX() || agent.getX()+Agent.AGENT_LENGTH<brick.getX()))
-                numberOfAvoided++;
+            if(brick.getBrickLength() < 5)
+                if(agent.getX()<=brick.getX() && brick.getX()+brick.getBrickLength()<=agent.getX()+Agent.AGENT_LENGTH) numberOfIntercepts++;
+                else numberOfMisses++;
+            else
+                if(isAgentBrickOverlap()) numberOfCrashes++;
+                else numberOfAvoided++;
             brick.refresh();
         }
     }
 
+    public boolean isAgentBrickOverlap() {
+        return !(brick.getX()+brick.getBrickLength()<agent.getX() || agent.getX()+Agent.AGENT_LENGTH<brick.getX());
+    }
 
     public double[] sense() {
         double[] sensing = new double[Agent.AGENT_LENGTH];
@@ -80,7 +93,7 @@ public class Board {
     }
 
     public double getBoardScore() {
-        return INTERCEPT_COST * numberOfIntercepts + AVOID_COST * numberOfAvoided;
+        return INTERCEPT_COST * numberOfIntercepts + AVOID_COST * numberOfAvoided + CRASH_COST * numberOfCrashes + MISS_COST * numberOfMisses;
     }
 
     public enum Action {
@@ -93,6 +106,14 @@ public class Board {
 
         public int getVector() {
             return vector;
+        }
+
+        public static Action[] getRightMoves() {
+            return new Action[]{ONE_TO_RIGHT, TWO_TO_RIGHT, THREE_TO_RIGHT, FOUR_TO_RIGHT};
+        }
+
+        public static Action[] getLeftMoves() {
+            return new Action[]{ONE_TO_LEFT, TWO_TO_LEFT, THREE_TO_LEFT, FOUR_TO_LEFT};
         }
     }
 }
