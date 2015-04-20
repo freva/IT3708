@@ -1,6 +1,5 @@
 package generics.CTRNN;
 
-import java.util.Arrays;
 
 public class CTRNN {
     protected CTRNNNode[][] network;
@@ -22,13 +21,9 @@ public class CTRNN {
         double[] currentOut = inputs.clone();
 
         for (CTRNNNode[] layer : network) {
-            double[] currentOutWithSelfOutputs = Arrays.copyOf(currentOut, currentOut.length+layer.length);
-            for (int j=currentOut.length; j<currentOutWithSelfOutputs.length; j++)
-                currentOutWithSelfOutputs[j] = layer[j-currentOut.length].getLastOutput();
-
             double[] newLayer = new double[layer.length];
             for (int j=0; j<layer.length; j++) {
-                layer[j].setInputs(currentOutWithSelfOutputs);
+                layer[j].setInputs(currentOut);
                 newLayer[j] = layer[j].getOutput();
             }
             currentOut = newLayer;
