@@ -22,15 +22,19 @@ public class BeerTracker extends JPanel {
 
 
     public void runSimulation() {
-        int popSize = 200;
+        int popSize = 800;
         int[] structure = new int[]{5, 2, 2};
 
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, structure);
-        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 400, 0.9, 0.9, 0.8, init);
+        EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, popSize, 0.9, 0.9, 0.2, init);
 
         for(int generation=0; generation<50; generation++) {
             ea.runGeneration();
             System.out.println(ea);
+
+            ArrayList<GenericGenoPhenom> adults = ea.getAdults();
+            for(GenericGenoPhenom ggp: adults)
+                ((WeightNode) ggp).resetFitness();
         }
 
 
@@ -40,7 +44,6 @@ public class BeerTracker extends JPanel {
 
 
     private void simulateBestChild(CTRNN ctrnn) {
-        System.out.println(ctrnn);
         Project4.setUpGUI(this);
 
         for (int i = 0; i < 600; i++) {
@@ -49,6 +52,7 @@ public class BeerTracker extends JPanel {
 
             board.move(WeightNode.getBestMove(output));
             repaint();
+            board.tick();
 
             try {
                 Thread.sleep(150);
@@ -79,10 +83,6 @@ public class BeerTracker extends JPanel {
         return init;
     }
 
-
-    public static Board getBoard() {
-        return board.getClone();
-    }
 
     public static double getRandomWeight(int pos) {
         switch (pos) {
