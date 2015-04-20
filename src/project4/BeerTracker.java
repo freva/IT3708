@@ -24,7 +24,7 @@ public class BeerTracker extends JPanel {
 
     public void runSimulation() {
         int popSize = 200;
-        int[] structure = new int[]{5, 18, 9};
+        int[] structure = new int[]{5, 9};
 
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, structure);
         EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, 400, 0.5, 0.9, 0.8, init);
@@ -73,7 +73,7 @@ public class BeerTracker extends JPanel {
                 }
             }
 
-            init.add(new WeightNode(structure, weights, ActivationFunction.SIGMOID));
+            init.add(new WeightNode(structure, weights));
         }
 
         return init;

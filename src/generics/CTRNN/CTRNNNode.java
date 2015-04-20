@@ -9,8 +9,8 @@ public class CTRNNNode extends ANNNode {
     private double internalState = 0, timeConstant, gain;
 
 
-    public CTRNNNode(ActivationFunction activationFunction, double[] weights) {
-        super(activationFunction, Arrays.copyOfRange(weights, 3, weights.length));
+    public CTRNNNode(double[] weights) {
+        super(ActivationFunction.SIGMOID, Arrays.copyOfRange(weights, 3, weights.length));
         this.timeConstant = weights[0];
         this.gain = weights[1];
         this.setBiasWeight(weights[2]);
@@ -25,6 +25,6 @@ public class CTRNNNode extends ANNNode {
 
     @Override
     public double getOutput(){
-        return activationFunction.compute(gain*getNodeValue());
+        return activationFunction.compute(gain*internalState);
     }
 }

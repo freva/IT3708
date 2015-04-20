@@ -8,19 +8,17 @@ import java.util.Arrays;
 
 
 public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
-    private ActivationFunction af;
     private int[] structure;
     private double fitness = Double.MIN_VALUE;
 
-    public WeightNode(int[] structure, Double[][] geno, ActivationFunction af) {
+    public WeightNode(int[] structure, Double[][] geno) {
         super(geno);
-        this.af = af;
         this.structure = structure;
     }
 
     @Override
     public CTRNN developmentalMethod() {
-        return new CTRNN(structure, convertGenoToPrimitive(), af);
+        return new CTRNN(structure, convertGenoToPrimitive());
     }
 
     @Override
@@ -35,7 +33,7 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
             out[i] = other.getGeno()[i].clone();
 
 
-        return new WeightNode(structure, out, af);
+        return new WeightNode(structure, out);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
             }
         }
 
-        return new WeightNode(structure, out, af);
+        return new WeightNode(structure, out);
     }
 
     @Override
