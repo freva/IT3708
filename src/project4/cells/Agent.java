@@ -9,23 +9,12 @@ public class Agent {
     public static final int AGENT_LENGTH = 5;
     private int x = (int) (Math.random()*(Board.DIMENSION_X-AGENT_LENGTH));
 
-    public Agent() {}
-
-    public Agent(int x) {
-        this.x = x;
-    }
-
-
     public int getX() {
         return x;
     }
 
     public void setX(int x) {
         this.x = x;
-    }
-
-    public Agent getClone() {
-        return new Agent(x);
     }
 
     public void draw(Graphics g, int offsetX, int offsetY) {

@@ -8,17 +8,10 @@ import java.awt.*;
 
 public class Board {
     private static final double INTERCEPT_COST = 1, AVOID_COST = 1, CRASH_COST = -1, MISS_COST = -1;
-    public static final int DIMENSION_X = 30, DIMENSION_Y = 10;
+    public static final int DIMENSION_X = 30, DIMENSION_Y = 15;
     private int numberOfIntercepts, numberOfAvoided, numberOfTicks, numberOfCrashes, numberOfMisses;
     private Agent agent = new Agent();
     private Brick brick = new Brick();
-
-    public Board() {}
-
-    public Board(Brick brick, Agent agent) {
-        this.brick = brick;
-        this.agent = agent;
-    }
 
 
     public int getNumberOfIntercepted() {
@@ -44,9 +37,11 @@ public class Board {
 
     public void move(Action action) {
         agent.setX((agent.getX()+action.getVector()+DIMENSION_X)%DIMENSION_X);
-        numberOfTicks++;
+    }
 
-        brick.tick();
+
+    public void tick() {
+        numberOfTicks++;
 
         if(brick.getY() == DIMENSION_Y-1) {
             if(brick.getBrickLength() < 5)
@@ -56,7 +51,7 @@ public class Board {
                 if(isAgentBrickOverlap()) numberOfCrashes++;
                 else numberOfAvoided++;
             brick.refresh();
-        }
+        } else brick.tick();
     }
 
     public boolean isAgentBrickOverlap() {
@@ -88,10 +83,6 @@ public class Board {
         brick.draw(g, offsetX, offsetY);
     }
 
-    public Board getClone() {
-        return new Board(brick.getClone(), agent.getClone());
-    }
-
     public double getBoardScore() {
         return INTERCEPT_COST * numberOfIntercepts + AVOID_COST * numberOfAvoided + CRASH_COST * numberOfCrashes + MISS_COST * numberOfMisses;
     }
@@ -106,14 +97,6 @@ public class Board {
 
         public int getVector() {
             return vector;
-        }
-
-        public static Action[] getRightMoves() {
-            return new Action[]{ONE_TO_RIGHT, TWO_TO_RIGHT, THREE_TO_RIGHT, FOUR_TO_RIGHT};
-        }
-
-        public static Action[] getLeftMoves() {
-            return new Action[]{ONE_TO_LEFT, TWO_TO_LEFT, THREE_TO_LEFT, FOUR_TO_LEFT};
         }
     }
 }
