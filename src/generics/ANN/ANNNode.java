@@ -1,7 +1,5 @@
 package generics.ANN;
 
-import java.util.Arrays;
-
 public class ANNNode {
     protected ActivationFunction activationFunction;
     protected double[] weights, inputs;
@@ -41,10 +39,5 @@ public class ANNNode {
             sum += inputs[i] * weights[i];
 
         return sum + biasWeight;
-    }
-
-
-    public String toString() {
-        return "Node: " + Arrays.toString(weights) + " " + Arrays.toString(inputs);
     }
 }
