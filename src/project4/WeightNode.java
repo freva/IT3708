@@ -37,11 +37,11 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
     public GenericGenoPhenom<Double[][], CTRNN> mutate() {
         Double[][] out = new Double[getGeno().length][];
 
-        int mutateNode = (int) (Math.random()*out.length);
+        double mutateChance = out.length/5.0;
         for(int i=0; i<out.length; i++) {
             out[i] = getGeno()[i].clone();
 
-            if(i == mutateNode) {
+            if(Math.random() < mutateChance) {
                 int mutatePos = (int) (Math.random() * out[i].length);
                 out[i][mutatePos] = BeerTracker.getRandomWeight(mutatePos);
             }
@@ -53,19 +53,25 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
     @Override
     public double fitnessEvaluation() {
         if(fitness == Double.MIN_VALUE) {
-            Board newBoard = BeerTracker.getBoard();
+            Board newBoard = new Board();
 
             for (int i = 0; i < 600; i++) {
                 getPhenom().propagateInput(newBoard.sense());
                 double[] output = getPhenom().getOutput();
 
                 newBoard.move(getBestMove(output));
+                newBoard.tick();
             }
 
             fitness = newBoard.getBoardScore();
         }
 
         return fitness;
+    }
+
+
+    public void resetFitness() {
+        fitness = Double.MIN_VALUE;
     }
 
 
@@ -84,10 +90,34 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
 
 
     public static Board.Action getBestMove(double[] arr) {
-        if(arr[0] < arr[1]) {
-            return Board.Action.getRightMoves()[((int) (arr[1]/(arr[0]+arr[1])/0.25-0.00001))];
-        } else {
-            return Board.Action.getLeftMoves()[((int) (arr[0]/(arr[0]+arr[1])/0.25-0.00001))];
+        //return Board.Action.values()[4 + (int) (Math.signum(arr[0]-0.5) * Math.exp(-arr[1]*1000)/0.2+0.001)];
+
+        int pos = 0;
+
+        for(int i=1; i<arr.length; i++) {
+            if(arr[i] > arr[pos])
+                pos = i;
+        }
+
+        switch (pos) {
+            case 0:
+                if (arr[pos] > 0.6)
+                    return Board.Action.ONE_TO_LEFT;
+                else if (arr[pos] > 0.37)
+                    return Board.Action.TWO_TO_LEFT;
+                else
+                    return Board.Action.THREE_TO_LEFT;
+
+            case 1:
+                if (arr[pos] > 0.6)
+                    return Board.Action.ONE_TO_RIGHT;
+                else if (arr[pos] > 0.37)
+                    return Board.Action.TWO_TO_RIGHT;
+                else
+                    return Board.Action.THREE_TO_RIGHT;
+
+            default:
+                return Board.Action.NONE;
         }
     }
 }
