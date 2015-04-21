@@ -21,17 +21,17 @@ public class BeerTracker extends JPanel {
         setLayout(null);
         setBackground(null);
 
-        this.scenario = scenario;
+        BeerTracker.scenario = scenario;
     }
 
 
     public void runSimulation() {
-        int popSize = 800;
+        int popSize = 4000;
 
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, scenario.getStructure());
         EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, popSize, 0.9, 0.9, 0.2, init);
 
-        for(int generation=0; generation<50; generation++) {
+        for(int generation=0; generation<100; generation++) {
             ea.runGeneration();
             System.out.println(ea);
 
@@ -117,7 +117,7 @@ public class BeerTracker extends JPanel {
 
 
     public enum Scenario {
-        STANDARD(new int[]{5, 2, 2}, new double[]{1, 1, -1, -1}), PULL(new int[]{5, 2, 3}, new double[]{1, 1.5, -2, -1}), NO_WRAP(new int[]{7, 3, 2}, new double[]{1, 1, -1, -1});
+        STANDARD(new int[]{5, 2, 2}, new double[]{1, 2, -1, -1}), PULL(new int[]{5, 2, 3}, new double[]{1, 1.25, -1.5, -1}), NO_WRAP(new int[]{7, 3, 2}, new double[]{1, 1.5, -1.25, -1.25});
 
         private int[] structure;
         private double[] rewards;
@@ -135,7 +135,7 @@ public class BeerTracker extends JPanel {
         }
 
         public int getNewPosition(int curPos, int relChange) {
-            if(this == NO_WRAP) return Math.min(Math.max(curPos + relChange, 0), Board.DIMENSION_X-Agent.AGENT_LENGTH-1);
+            if(this == NO_WRAP) return Math.min(Math.max(curPos + relChange, 0), Board.DIMENSION_X-Agent.AGENT_LENGTH);
             else return (curPos + relChange + Board.DIMENSION_X)%Board.DIMENSION_X;
         }
     }
