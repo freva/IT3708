@@ -6,7 +6,9 @@ import generics.EA.GenericGenoPhenom;
 
 public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
     private int[] structure;
-    private double fitness = Double.MIN_VALUE;
+    private double fitness = 0;
+    private int numComputedFitness = 0;
+    private boolean recomputeFitness = true;
 
     public WeightNode(int[] structure, Double[][] geno) {
         super(geno);
@@ -52,7 +54,7 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
 
     @Override
     public double fitnessEvaluation() {
-        if(fitness == Double.MIN_VALUE) {
+        if(recomputeFitness && numComputedFitness < 20) {
             Board newBoard = new Board();
 
             for (int i = 0; i < 600; i++) {
@@ -63,15 +65,17 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
                 newBoard.tick();
             }
 
-            fitness = newBoard.getBoardScore();
+            fitness += newBoard.getBoardScore();
+            numComputedFitness++;
+            recomputeFitness = false;
         }
 
-        return fitness;
+        return fitness/numComputedFitness;
     }
 
 
     public void resetFitness() {
-        fitness = Double.MIN_VALUE;
+        recomputeFitness = true;
     }
 
 
@@ -90,8 +94,6 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
 
 
     public static Board.Action getBestMove(double[] arr) {
-        //return Board.Action.values()[4 + (int) (Math.signum(arr[0]-0.5) * Math.exp(-arr[1]*1000)/0.2+0.001)];
-
         int pos = 0;
 
         for(int i=1; i<arr.length; i++) {
@@ -101,20 +103,24 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
 
         switch (pos) {
             case 0:
-                if (arr[pos] > 0.6)
+                if (arr[pos] > 0.7)
                     return Board.Action.ONE_TO_LEFT;
-                else if (arr[pos] > 0.37)
+                else if (arr[pos] > 0.5)
                     return Board.Action.TWO_TO_LEFT;
-                else
+                else if (arr[pos] > 0.2)
                     return Board.Action.THREE_TO_LEFT;
+                else
+                    return Board.Action.FOUR_TO_LEFT;
 
             case 1:
-                if (arr[pos] > 0.6)
+                if (arr[pos] > 0.7)
                     return Board.Action.ONE_TO_RIGHT;
-                else if (arr[pos] > 0.37)
+                else if (arr[pos] > 0.5)
                     return Board.Action.TWO_TO_RIGHT;
-                else
+                else if (arr[pos]  > 0.2)
                     return Board.Action.THREE_TO_RIGHT;
+                else
+                    return Board.Action.FOUR_TO_RIGHT;
 
             case 2:
                 return Board.Action.PULL;
