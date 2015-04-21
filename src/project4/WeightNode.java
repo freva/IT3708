@@ -54,7 +54,7 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
 
     @Override
     public double fitnessEvaluation() {
-        if(recomputeFitness && numComputedFitness < 20) {
+        if(recomputeFitness && numComputedFitness < 10) {
             Board newBoard = new Board();
 
             for (int i = 0; i < 600; i++) {
