@@ -7,14 +7,16 @@ public class Project4 {
     public static final int CELL_SIZE = 40;
 
     public static void main(String[] args) {
-        BeerTracker bt = new BeerTracker(BeerTracker.Scenario.NO_WRAP);
+        BeerTracker.Scenario scenario = BeerTracker.Scenario.values()[Integer.parseInt(args[0])-1];
+
+        BeerTracker bt = new BeerTracker(scenario);
         bt.runSimulation();
     }
 
 
     public static void setUpGUI(BeerTracker flatland) {
         JFrame frame = new JFrame();
-        frame.setTitle("Flatland");
+        frame.setTitle("Tracker");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.pack();
