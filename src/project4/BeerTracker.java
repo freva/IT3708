@@ -26,12 +26,13 @@ public class BeerTracker extends JPanel {
 
 
     public void runSimulation() {
+        long startTime = System.currentTimeMillis();
         int popSize = 4000;
 
         ArrayList<GenericGenoPhenom> init = generateInitialPopulation(popSize, scenario.getStructure());
         EvolutionaryAlgorithm ea = new EvolutionaryAlgorithm(AdultSelection.MIXING, ParentSelection.TOURNAMENT, popSize, 0.9, 0.9, 0.2, init);
 
-        for(int generation=0; generation<100; generation++) {
+        for(int i=0; i<100; i++) {
             ea.runGeneration();
             System.out.println(ea);
 
@@ -41,6 +42,7 @@ public class BeerTracker extends JPanel {
         }
 
 
+        System.out.println("Finished in: " + ((System.currentTimeMillis()-startTime)/1000) + "sec");
         CTRNN ctrnn = (CTRNN) ea.getBestNode().getPhenom();
         simulateBestChild(ctrnn);
     }
