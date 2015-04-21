@@ -69,7 +69,7 @@ public class Board {
 
         if(BeerTracker.getScenario() == BeerTracker.Scenario.NO_WRAP) {
             sensing[Agent.AGENT_LENGTH] = agent.getX() == 0 ? 1 : 0;
-            sensing[Agent.AGENT_LENGTH+1] = agent.getX() == DIMENSION_X-Agent.AGENT_LENGTH-1 ? 1 : 0;
+            sensing[Agent.AGENT_LENGTH+1] = agent.getX() == DIMENSION_X-Agent.AGENT_LENGTH ? 1 : 0;
         }
 
         return sensing;
