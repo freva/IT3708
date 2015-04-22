@@ -75,8 +75,8 @@ public class BeerTracker extends JPanel {
 
             for(int j=1, pos=0; j<structure.length; j++) {
                 for (int k = 0; k < structure[j]; k++, pos++) {
-                    weights[pos] = new Double[structure[j] + structure[j-1] + 3];
-                    for (int l = 0; l < structure[j] + structure[j - 1] + 3; l++)
+                    weights[pos] = new Double[structure[j-1] + 3];
+                    for (int l = 0; l < structure[j - 1] + 3; l++)
                         weights[pos][l] = getRandomWeight(l);
                 }
             }
