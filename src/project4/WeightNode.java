@@ -39,7 +39,7 @@ public class WeightNode extends GenericGenoPhenom<Double[][], CTRNN> {
     public GenericGenoPhenom<Double[][], CTRNN> mutate() {
         Double[][] out = new Double[getGeno().length][];
 
-        double mutateChance = out.length/5.0;
+        double mutateChance = out.length/10.0;
         for(int i=0; i<out.length; i++) {
             out[i] = getGeno()[i].clone();
 
