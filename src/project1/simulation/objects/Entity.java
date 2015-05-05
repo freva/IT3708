@@ -1,6 +1,6 @@
 package project1.simulation.objects;
 
-import project1.Main;
+import project1.Project1;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ public abstract class Entity {
     protected double x, y;
 
     protected Entity() {
-        this.x = Math.random() * Main.SIMULATION_WIDTH;
-        this.y = Math.random() * Main.SIMULATION_HEIGHT;
+        this.x = Math.random() * Project1.SIMULATION_WIDTH;
+        this.y = Math.random() * Project1.SIMULATION_HEIGHT;
     }
 
     public double distanceTo(Entity other) {

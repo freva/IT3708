@@ -1,6 +1,6 @@
 package project1.simulation.objects;
 
-import project1.Main;
+import project1.Project1;
 import project1.simulation.Vector2D;
 
 import java.awt.*;
@@ -37,8 +37,8 @@ public class Boid extends Entity {
 
 
     public void move() {
-        this.x = modulo((int) (this.x + velocity.getX()), Main.SIMULATION_WIDTH);
-        this.y = modulo((int) (this.y + velocity.getY()), Main.SIMULATION_HEIGHT);
+        this.x = modulo((int) (this.x + velocity.getX()), Project1.SIMULATION_WIDTH);
+        this.y = modulo((int) (this.y + velocity.getY()), Project1.SIMULATION_HEIGHT);
     }
 
 

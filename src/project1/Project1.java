@@ -6,19 +6,19 @@ import project1.simulation.Simulation;
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
+public class Project1 {
     public static final int APP_WIDTH = 980, APP_HEIGHT = 680;
     public static final int SIMULATION_WIDTH = 810, SIMULATION_HEIGHT = APP_HEIGHT;
 
 
     public static void main(String[] args) {
         Simulation.createSimulation(Integer.parseInt(args[0]));
-        new Main();
+        new Project1();
         Simulation.getSimulation().run();
     }
 
 
-    public Main() {
+    public Project1() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[]{SIMULATION_WIDTH, APP_WIDTH-SIMULATION_WIDTH};
         gridBagLayout.rowHeights = new int[]{APP_HEIGHT};
