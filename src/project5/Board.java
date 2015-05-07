@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
-    private static final double POISON_REWARD = -100, FOOD_REWARD = 1, FINISH_REWARD = 2;
+    private static final double POISON_REWARD = -100, FOOD_REWARD = 2, FINISH_REWARD = 10;
 
     private int foodTotal, foodEaten, poisonEaten, moves;
     private EmptyCell[][] board;
@@ -110,20 +110,24 @@ public class Board implements QGame {
         }
     }
 
-    public String getHash() {
+    public String getHash(boolean withAgent) {
         StringBuilder sb = new StringBuilder();
 
-        for(int i=0; i<board.length; i++) {
-            for(int j=0; j<board[i].length; j++) {
-                EmptyCell targetCell = getCell(i, j);
-                if(targetCell instanceof Food) sb.append("0");
-                else if(targetCell instanceof Poison) sb.append("1");
-                else if(targetCell instanceof Agent) sb.append("2");
+        for (EmptyCell[] aBoard : board) {
+            for (EmptyCell targetCell : aBoard) {
+                if (targetCell instanceof Food) sb.append("0");
+                else if (targetCell instanceof Poison) sb.append("1");
+                else if (targetCell instanceof Agent) sb.append("2");
                 else sb.append("3");
             }
         }
 
-        return sb.toString();
+        if(withAgent) return sb.append(agent.getX()).append(agent.getY()).toString();
+        else return sb.toString();
+    }
+
+    public String getHash() {
+        return getHash(true);
     }
 
 

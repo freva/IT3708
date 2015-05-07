@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Flatland extends JPanel {
     public static final int INFO_BOARD_HEIGHT = 25;
     private Board board;
+    private QLearner qLearner;
 
 
     public Flatland(ArrayList<Integer> cells) {
@@ -22,22 +23,28 @@ public class Flatland extends JPanel {
 
 
     public void runSimulation() {
-        QLearner qLearner = new QLearner(board, Direction.values().length-1, 0.8, 0.5);
+        qLearner = new QLearner(board, Direction.values().length-1, 0.8, 0.5);
 
-        for(int i=0; i<2000; i++) {
+        for(int i=0; i<200; i++) {
             qLearner.runGeneration();
-            System.out.println("Iteration: " + (i+1) + " | " + qLearner.getLastGame());
+            System.out.println("Iteration: " + (i + 1) + " | " + qLearner.getLastGame());
         }
 
-        simulateBestResult(qLearner);
+        simulateBestResult();
     }
 
 
-    private void simulateBestResult(QLearner qLearner) {
+    private void simulateBestResult() {
         Project5.setUpGUI(this);
         do {
             board.updateGame(qLearner.selectAction(board.getHash()));
+
             repaint();
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } while(!board.isFinished());
     }
 
@@ -51,6 +58,8 @@ public class Flatland extends JPanel {
         g.drawString(board.toString(), 10, 22);
         for (int i=0; i<Board.BOARD_DIMENSION_X; i++) {
             for (int j=0; j<Board.BOARD_DIMENSION_Y; j++) {
+                Direction direction = Direction.values()[qLearner.selectAction(board.getHash(false) + i + j)];
+                board.getCell(i, j).setDirection(direction);
                 board.getCell(i, j).draw(g, i*Project5.CELL_SIZE, INFO_BOARD_HEIGHT+j*Project5.CELL_SIZE);
             }
         }

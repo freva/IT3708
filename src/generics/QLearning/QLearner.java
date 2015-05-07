@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 public class QLearner {
     private HashMap<String, Double[]> Q = new HashMap<>();
-    private LinkedList<String> prevStates;
     private double alpha, gamma;
     private int numActions, queueSize = 10;
     private QGame original, last;
@@ -20,19 +19,19 @@ public class QLearner {
 
 
     public void runGeneration() {
+        LinkedList<String> prevStates = new LinkedList<>();
         last = original.getClone();
-        prevStates = new LinkedList<>();
         prevStates.add(last.getHash());
 
         int moves = 0;
-        while (!last.isFinished() && moves++ < 10000) {
+        while (!last.isFinished() && moves++ < 1000) {
             int action = selectAction(prevStates.getLast());
             double reward = last.updateGame(action);
             prevStates.add(last.getHash());
             if(prevStates.size() > queueSize) prevStates.pop();
 
-            for(int i=prevStates.size()-1; i>0; i--) {
-                updateQ(prevStates.get(i-1), prevStates.get(i), action, reward);
+            for(int i= prevStates.size()-1; i>0; i--) {
+                updateQ(prevStates.get(i - 1), prevStates.get(i), action, reward);
             }
         }
     }
