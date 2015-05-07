@@ -20,6 +20,11 @@ public class EmptyCell {
     }
 
 
+    public boolean isStart() {
+        return isStart;
+    }
+
+
     public void draw(Graphics g, int offsetX, int offsetY) {
         if(!isStart) g.setColor(Color.LIGHT_GRAY);
         else g.setColor(Color.CYAN);
