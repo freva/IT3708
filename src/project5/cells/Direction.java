@@ -14,6 +14,14 @@ public enum Direction {
         this.vectorY = vectorY;
     }
 
+    public int getVectorY() {
+        return vectorY;
+    }
+
+    public int getVectorX() {
+        return vectorX;
+    }
+
     public void drawDirection(Graphics g1, int x, int y) {
         int cellCenterX = x + Project5.CELL_SIZE/2, cellCenterY = y + Project5.CELL_SIZE/2;
         int cellOffsetX = (int) (vectorX*Project5.CELL_SIZE*0.3), cellOffsetY = (int) (vectorY*Project5.CELL_SIZE*0.3);
