@@ -22,6 +22,15 @@ public class Agent extends EmptyCell {
         return y;
     }
 
+    public void setPosition(int newX, int newY) {
+        this.x = newX;
+        this.y = newY;
+    }
+
+    public Agent getClone() {
+        return new Agent(x, y);
+    }
+
     @Override
     public void draw(Graphics g, int offsetX, int offsetY) {
         super.draw(g, offsetX, offsetY);
