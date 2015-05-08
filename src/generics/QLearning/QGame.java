@@ -1,7 +1,7 @@
 package generics.QLearning;
 
 public interface QGame {
-    public QGame getClone();
+    public void reset();
 
     public boolean isFinished();
 

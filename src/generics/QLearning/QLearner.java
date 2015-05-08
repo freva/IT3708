@@ -7,11 +7,11 @@ import java.util.LinkedList;
 public class QLearner {
     private HashMap<String, Double[]> Q = new HashMap<>();
     private double alpha, gamma;
-    private int numActions, queueSize = 20;
-    private QGame original, last;
+    private int numActions, generation, queueSize = 4;
+    private QGame qGame;
 
     public QLearner(QGame qGame, int numActions, double alpha, double gamma) {
-        this.original = qGame;
+        this.qGame = qGame;
         this.numActions = numActions;
         this.alpha = alpha;
         this.gamma = gamma;
@@ -19,30 +19,35 @@ public class QLearner {
 
 
     public void runGeneration() {
+        generation++;
         LinkedList<QHistory> prevStates = new LinkedList<>();
-        last = original.getClone();
 
         int moves = 0;
-        while (!last.isFinished() && moves++ < last.getStepLimit()) {
-            String currentState = last.getHash();
+        while (!qGame.isFinished() && moves++ < qGame.getStepLimit()) {
+            String currentState = qGame.getHash();
 
             int action = selectAction(currentState);
-            double reward = last.updateGame(action);
-            prevStates.add(new QHistory(currentState, action, reward));
+            double reward = qGame.updateGame(action);
+            prevStates.add(new QHistory(currentState, action));
 
             if(prevStates.size() > queueSize) prevStates.pop();
 
-            String nextState = last.getHash();
+            String nextState = qGame.getHash();
+            double oldVal = Q.get(currentState)[action];
+            double qMax = Q.containsKey(nextState) ? getMaxVal(Q.get(nextState)) : 0;
+            double delta = reward + gamma * qMax - oldVal;
+            double eligibilityDecay = 1;
+
             for(int i=prevStates.size()-1; i>=0; i--) {
-                updateQ(prevStates.get(i), nextState);
-                nextState = prevStates.get(i).getState();
+                QHistory oldState = prevStates.get(i);
+                oldVal = Q.get(oldState.getState())[oldState.getAction()];
+                Q.get(oldState.getState())[oldState.getAction()] = oldVal + alpha * delta * eligibilityDecay;;
+                eligibilityDecay *= 0.8;
             }
         }
-    }
 
-
-    public QGame getLastGame() {
-        return last;
+        if(generation%100 == 0) System.out.println("Iteration: " + generation + " | " + qGame);
+        qGame.reset();
     }
 
 
@@ -50,7 +55,7 @@ public class QLearner {
         Double[] actions = Q.get(state);
         if(actions == null) {
             Double[] array = new Double[numActions];
-            Arrays.fill(array, 10d);
+            Arrays.fill(array, 0d);
             Q.put(state, array);
             return (int) (Math.random()*numActions);
         }
@@ -60,7 +65,7 @@ public class QLearner {
             if(actions[maxPos] < actions[i]) maxPos = i;
         }
 
-        if(Math.random() < 0.2) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
+        if(actions[maxPos] == 0 || Math.random() < Math.exp(-generation/500)) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
         else return maxPos;
     }
 
@@ -77,18 +82,9 @@ public class QLearner {
         return maxPos;
     }
 
-    private void updateQ(QHistory oldState, String newState) {
-        double oldVal = Q.get(oldState.getState())[oldState.getAction()];
-        double qMax = Q.containsKey(newState) ? getMaxVal(Q.get(newState)) : 0;
-        double newVal = oldVal + alpha * (oldState.getReward() + gamma * qMax - oldVal);
-        Q.get(oldState.getState())[oldState.getAction()] = newVal;
-    }
-
-
-    private double getMaxVal(Double[] arr) {
+    private static double getMaxVal(Double[] arr) {
         double maxVal = Double.MIN_VALUE;
-        for (Double anArr : arr)
-            if (maxVal < anArr) maxVal = anArr;
+        for (Double anArr : arr) if (maxVal < anArr) maxVal = anArr;
 
         return maxVal;
     }

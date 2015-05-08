@@ -8,10 +8,10 @@ import java.util.Arrays;
 
 public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
-    private static final double POISON_REWARD = -10, FOOD_REWARD = 10, FINISH_REWARD = 20;
+    private static final double POISON_REWARD = -100, FINISH_REWARD = 5000;
 
-    private int foodTotal, foodEaten, poisonEaten, moves;
-    private EmptyCell[][] board;
+    private int foodTotal, foodEaten, poisonEaten, moves, startX, startY;
+    private EmptyCell[][] original, board;
     private Agent agent;
 
 
@@ -19,38 +19,34 @@ public class Board implements QGame {
         BOARD_DIMENSION_X = values.get(0);
         BOARD_DIMENSION_Y = values.get(1);
 
-        board = new EmptyCell[BOARD_DIMENSION_X][BOARD_DIMENSION_Y];
-        for(int i=0; i<board.length; i++) {
-            for(int j=0; j<board[i].length; j++) {
+        original = new EmptyCell[BOARD_DIMENSION_X][BOARD_DIMENSION_Y];
+        for(int i=0; i<original.length; i++) {
+            for(int j=0; j<original[i].length; j++) {
                 switch (values.get(5+i + j*BOARD_DIMENSION_X)) {
                     case -2:
-                        board[i][j] = new EmptyCell(true);
+                        original[i][j] = new EmptyCell(true);
                         agent = new Agent(i, j);
+                        startX = i;
+                        startY = j;
                         break;
 
                     case -1:
-                        board[i][j] = new Poison();
+                        original[i][j] = new Poison();
                         break;
 
                     case 0:
-                        board[i][j] = new EmptyCell();
+                        original[i][j] = new EmptyCell();
                         break;
 
                     default:
-                        board[i][j] = new Food();
+                        original[i][j] = new Food();
                         foodTotal++;
                         break;
                 }
             }
         }
-    }
 
-    public Board(EmptyCell[][] board, Agent agent, int foodTotal, int foodEaten, int poisonEaten) {
-        this.board = board;
-        this.agent = agent;
-        this.foodTotal = foodTotal;
-        this.foodEaten = foodEaten;
-        this.poisonEaten = poisonEaten;
+        reset();
     }
 
 
@@ -72,13 +68,16 @@ public class Board implements QGame {
     }
 
     @Override
-    public QGame getClone() {
-        EmptyCell[][] cells = new EmptyCell[board.length][];
+    public void reset() {
+        board = new EmptyCell[original.length][];
 
-        for(int i=0; i<board.length; i++) {
-            cells[i] = Arrays.copyOf(board[i], board[i].length);
-        }
-        return new Board(cells, agent.getClone(), foodTotal, foodEaten, poisonEaten);
+        for(int i=0; i<board.length; i++)
+            board[i] = Arrays.copyOf(original[i], original[i].length);
+
+        agent.setPosition(startX, startY);
+        poisonEaten = 0;
+        foodEaten = 0;
+        moves = 0;
     }
 
     @Override
@@ -98,16 +97,14 @@ public class Board implements QGame {
         if(targetCell instanceof Food) {
             board[newX][newY] = new EmptyCell();
             foodEaten++;
-            return FOOD_REWARD;
+            return Math.abs(newX-startX) + Math.abs(newY-startY);
         } else if(targetCell instanceof Poison) {
             board[newX][newY] = new EmptyCell();
             poisonEaten++;
             return POISON_REWARD;
         } else  if(isFinished()) {
-            return FINISH_REWARD;
-        } else {
-            return 0;
-        }
+            return FINISH_REWARD/moves;
+        } else return 0;
     }
 
     public String getHash(boolean withAgent) {
