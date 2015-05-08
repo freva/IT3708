@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
-    private static final double POISON_REWARD = -10, FOOD_REWARD = 2, FINISH_REWARD = 10;
+    private static final double POISON_REWARD = -10, FOOD_REWARD = 10, FINISH_REWARD = 20;
 
     private int foodTotal, foodEaten, poisonEaten, moves;
     private EmptyCell[][] board;
@@ -113,12 +113,10 @@ public class Board implements QGame {
     public String getHash(boolean withAgent) {
         StringBuilder sb = new StringBuilder();
 
-        for (EmptyCell[] aBoard : board) {
-            for (EmptyCell targetCell : aBoard) {
-                if (targetCell instanceof Food) sb.append("O");
-                else if (targetCell instanceof Poison) sb.append("X");
-                else if (targetCell instanceof Agent) sb.append("?");
-                else sb.append(".");
+        for (int i=0; i<BOARD_DIMENSION_X; i++) {
+            for (int j=0; j<BOARD_DIMENSION_Y; j++) {
+                EmptyCell targetCell = board[i][j];
+                if (targetCell instanceof Food) sb.append(i).append(j);
             }
         }
 
@@ -132,20 +130,6 @@ public class Board implements QGame {
 
 
     public String toString() {
-        return "Moves: " + getNumberOfMoves() + " | Food: " + getFoodEaten() + " | Poison: " + getPoisonEaten() + " | " + agent.getX() + " " + agent.getY();
-    }
-
-
-    public void printBoard() {
-        for(int y=0; y<BOARD_DIMENSION_Y; y++) {
-            for (int x=0; x<BOARD_DIMENSION_X; x++) {
-                EmptyCell targetCell = getCell(x, y);
-                if (targetCell instanceof Food) System.out.print("O");
-                else if (targetCell instanceof Poison) System.out.print("X");
-                else if (targetCell instanceof Agent) System.out.print("?");
-                else System.out.print(".");
-            }
-            System.out.println();
-        }
+        return "Moves: " + getNumberOfMoves() + " | Food: " + getFoodEaten() + " | Poison: " + getPoisonEaten();
     }
 }

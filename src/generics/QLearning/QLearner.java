@@ -1,7 +1,5 @@
 package generics.QLearning;
 
-import project5.Board;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -25,7 +23,7 @@ public class QLearner {
         last = original.getClone();
 
         int moves = 0;
-        while (!last.isFinished() && moves++ < 2000) {
+        while (!last.isFinished() && moves++ < 4000) {
             //((Board) last).printBoard();
 
             String currentState = last.getHash();
@@ -41,20 +39,7 @@ public class QLearner {
                 updateQ(prevStates.get(i), nextState);
                 nextState = prevStates.get(i).getState();
             }
-
-            /*System.out.println(prevStates.getLast());
-            for (QHistory prevState : prevStates)
-                System.out.print(Q.get(prevState.getState())[prevState.getAction()] + ", ");
-            System.out.println(Arrays.toString(Q.get(currentState)) + "\n");*/
         }
-/*
-        for (QHistory prevState : prevStates)
-            System.out.println(prevState);
-
-        System.out.println();
-        for(String key: Q.keySet())
-            System.out.println(key + ": " + Arrays.toString(Q.get(key)));
-        System.exit(0);*/
     }
 
 
@@ -67,24 +52,32 @@ public class QLearner {
         Double[] actions = Q.get(state);
         if(actions == null) {
             Double[] array = new Double[numActions];
-            Arrays.fill(array, 0d);
+            Arrays.fill(array, 10d);
             Q.put(state, array);
             return (int) (Math.random()*numActions);
         }
 
-        double sum = actions[0], target = Math.random();
-
-        double[] cdf = new double[actions.length];
+        int maxPos = 0;
         for(int i=1; i<actions.length; i++) {
-            cdf[i] = actions[i-1] + actions[i];
-            sum += actions[i];
+            if(actions[maxPos] < actions[i]) maxPos = i;
         }
 
-        for(int i=0; i<cdf.length; i++)
-            if(cdf[i]/sum > target) return i;
-        return actions.length-1;
+        if(Math.random() < 0.2) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
+        else return maxPos;
     }
 
+
+    public int getAction(String state) {
+        Double[] actions = Q.get(state);
+        if(actions == null) return 4;
+
+        int maxPos = 0;
+        for(int i=1; i<actions.length; i++) {
+            if(actions[maxPos] < actions[i]) maxPos = i;
+        }
+
+        return maxPos;
+    }
 
     private void updateQ(QHistory oldState, String newState) {
         double oldVal = Q.get(oldState.getState())[oldState.getAction()];
