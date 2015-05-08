@@ -8,4 +8,6 @@ public interface QGame {
     public double updateGame(int action);
 
     public String getHash();
+
+    public int getStepLimit();
 }

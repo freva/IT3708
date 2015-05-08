@@ -23,11 +23,11 @@ public class Flatland extends JPanel {
 
 
     public void runSimulation() {
-        qLearner = new QLearner(board, Direction.values().length-1, 0.05, 0.3);
+        qLearner = new QLearner(board, Direction.values().length-1, 0.05d, 0.3d);
 
-        for(int i=0; i<500; i++) {
+        for(int i=0; i<5000; i++) {
             qLearner.runGeneration();
-            System.out.println("Iteration: " + (i + 1) + " | " + qLearner.getLastGame());
+            if(i%100 == 0) System.out.println("Iteration: " + i + " | " + qLearner.getLastGame());
         }
 
         simulateBestResult();

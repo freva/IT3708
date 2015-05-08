@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class QLearner {
     private HashMap<String, Double[]> Q = new HashMap<>();
     private double alpha, gamma;
-    private int numActions, queueSize = 10;
+    private int numActions, queueSize = 20;
     private QGame original, last;
 
     public QLearner(QGame qGame, int numActions, double alpha, double gamma) {
@@ -23,9 +23,7 @@ public class QLearner {
         last = original.getClone();
 
         int moves = 0;
-        while (!last.isFinished() && moves++ < 4000) {
-            //((Board) last).printBoard();
-
+        while (!last.isFinished() && moves++ < last.getStepLimit()) {
             String currentState = last.getHash();
 
             int action = selectAction(currentState);

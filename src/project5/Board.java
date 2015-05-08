@@ -116,7 +116,7 @@ public class Board implements QGame {
         for (int i=0; i<BOARD_DIMENSION_X; i++) {
             for (int j=0; j<BOARD_DIMENSION_Y; j++) {
                 EmptyCell targetCell = board[i][j];
-                if (targetCell instanceof Food) sb.append(i).append(j);
+                if (targetCell instanceof Food) sb.append((char) i).append((char) j);
             }
         }
 
@@ -131,5 +131,10 @@ public class Board implements QGame {
 
     public String toString() {
         return "Moves: " + getNumberOfMoves() + " | Food: " + getFoodEaten() + " | Poison: " + getPoisonEaten();
+    }
+
+
+    public int getStepLimit() {
+        return BOARD_DIMENSION_X * BOARD_DIMENSION_Y * 8;
     }
 }
