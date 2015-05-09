@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class QLearner {
     private HashMap<String, Double[]> Q = new HashMap<>();
     private double alpha, gamma;
-    private int numActions, generation, queueSize = 4;
+    private int numActions, iteration, queueSize = 4;
     private QGame qGame;
 
     public QLearner(QGame qGame, int numActions, double alpha, double gamma) {
@@ -18,9 +18,9 @@ public class QLearner {
     }
 
 
-    public void runGeneration() {
-        generation++;
+    public void runIteration() {
         LinkedList<QHistory> prevStates = new LinkedList<>();
+        iteration++;
 
         int moves = 0;
         while (!qGame.isFinished() && moves++ < qGame.getStepLimit()) {
@@ -46,7 +46,7 @@ public class QLearner {
             }
         }
 
-        if(generation%100 == 0) System.out.println("Iteration: " + generation + " | " + qGame);
+        if(iteration %100 == 0) System.out.println("Iteration: " + iteration + " | " + qGame);
         qGame.reset();
     }
 
@@ -65,7 +65,7 @@ public class QLearner {
             if(actions[maxPos] < actions[i]) maxPos = i;
         }
 
-        if(actions[maxPos] == 0 || Math.random() < Math.exp(-generation/500)) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
+        if(actions[maxPos] == 0 || Math.random() < Math.exp(-iteration /500)) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
         else return maxPos;
     }
 
@@ -84,7 +84,8 @@ public class QLearner {
 
     private static double getMaxVal(Double[] arr) {
         double maxVal = Double.MIN_VALUE;
-        for (Double anArr : arr) if (maxVal < anArr) maxVal = anArr;
+        for (Double anArr : arr)
+            if (maxVal < anArr) maxVal = anArr;
 
         return maxVal;
     }

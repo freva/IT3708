@@ -26,7 +26,7 @@ public class Flatland extends JPanel {
         qLearner = new QLearner(board, Direction.values().length-1, 0.9d, 0.7d);
 
         for(int i=0; i<5000; i++) {
-            qLearner.runGeneration();
+            qLearner.runIteration();
         }
 
         simulateBestResult();
