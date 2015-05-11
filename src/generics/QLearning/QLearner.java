@@ -44,18 +44,16 @@ public class QLearner {
                 updateQ(prevStates, delta);
             }
 
-            if (iteration % 100 == 0) System.out.println("Iteration: " + iteration + " | " + qGame);
-            if (iteration>=4900) results[iteration-4900] = ((Board) qGame).getNumberOfMoves();
+            results[iteration%100] = ((Board) qGame).getNumberOfMoves();
+            if (iteration % 100 == 99) System.out.println("Iteration: " + (iteration+1) + " | Avg: " + Arrays.stream(results).average().getAsDouble() + " | Min: " + Arrays.stream(results).min().getAsInt());
 
             qGame.reset();
         }
-
-        System.out.println("Avg: " + Arrays.stream(results).average().getAsDouble() + " | Min: " + Arrays.stream(results).min().getAsInt());
     }
 
 
     private void updateQ(LinkedList<QHistory> previousStates, double delta) {
-        double eligibilityDecay  = 1;
+        double eligibilityDecay = 1;
 
         for (int i = previousStates.size() - 1; i >= 0; i--) {
             double reward = previousStates.get(i).getReward();
