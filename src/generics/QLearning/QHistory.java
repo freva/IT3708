@@ -1,23 +1,32 @@
 package generics.QLearning;
 
-public class QHistory {
-    private String state;
-    private int action;
 
-    QHistory(String state, int action) {
+class QHistory {
+    private String state, nextState;
+    private int action;
+    private double reward;
+
+    QHistory(String state, String nextState, int action, double reward) {
         this.state = state;
+        this.nextState = nextState;
         this.action = action;
+        this.reward = reward;
     }
+
 
     public String getState() {
         return state;
+    }
+
+    public String getNextState() {
+        return nextState;
     }
 
     public int getAction() {
         return action;
     }
 
-    public String toString() {
-        return "State: " + state + " | Action: " + action;
+    public double getReward() {
+        return reward;
     }
 }
