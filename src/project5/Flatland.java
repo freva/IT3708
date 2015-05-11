@@ -23,11 +23,8 @@ public class Flatland extends JPanel {
 
 
     public void runSimulation() {
-        qLearner = new QLearner(board, Direction.values().length-1, 0.9d, 0.7d);
-
-        for(int i=0; i<5000; i++) {
-            qLearner.runIteration();
-        }
+        qLearner = new QLearner(board, 0.7, 0.7, 0.8);
+        qLearner.train(5000);
 
         simulateBestResult();
     }
@@ -36,11 +33,11 @@ public class Flatland extends JPanel {
     private void simulateBestResult() {
         Project5.setUpGUI(this);
         do {
-            board.updateGame(qLearner.getAction(board.getHash()));
+            board.updateGame(qLearner.getBestAction(board.getHash()));
 
             repaint();
             try {
-                Thread.sleep(150);
+                Thread.sleep(15);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -57,9 +54,9 @@ public class Flatland extends JPanel {
         g.drawString(board.toString(), 10, 22);
         for (int i=0; i<Board.BOARD_DIMENSION_X; i++) {
             for (int j=0; j<Board.BOARD_DIMENSION_Y; j++) {
-                Direction direction = Direction.values()[qLearner.getAction(board.getHash(false) + i + j)];
-                board.getCell(i, j).setDirection(direction);
-                board.getCell(i, j).draw(g, i*Project5.CELL_SIZE, INFO_BOARD_HEIGHT+j*Project5.CELL_SIZE);
+                board.getCell(i, j).draw(g, i * Project5.CELL_SIZE, INFO_BOARD_HEIGHT + j * Project5.CELL_SIZE);
+                Direction direction = Direction.values()[qLearner.getBestAction(board.getHash(i, j))];
+                direction.drawDirection(g, i * Project5.CELL_SIZE, INFO_BOARD_HEIGHT + j * Project5.CELL_SIZE);
             }
         }
     }
