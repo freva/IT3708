@@ -1,53 +1,75 @@
 package generics.QLearning;
 
+import project5.Board;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class QLearner {
+    private static final int numActions = 4, queueSize = 2;
     private HashMap<String, Double[]> Q = new HashMap<>();
-    private double alpha, gamma;
-    private int numActions, iteration, queueSize = 4;
+    private double alpha, gamma, lambda, probFactor;
     private QGame qGame;
+    private int iteration;
+    private int[] results = new int[100];
 
-    public QLearner(QGame qGame, int numActions, double alpha, double gamma) {
+    public QLearner(QGame qGame, double alpha, double gamma, double lambda) {
         this.qGame = qGame;
-        this.numActions = numActions;
         this.alpha = alpha;
         this.gamma = gamma;
+        this.lambda = lambda;
     }
 
 
-    public void runIteration() {
-        LinkedList<QHistory> prevStates = new LinkedList<>();
-        iteration++;
+    public void train(int numIterations) {
+        probFactor = numIterations/10.0;
 
-        int moves = 0;
-        while (!qGame.isFinished() && moves++ < qGame.getStepLimit()) {
-            String currentState = qGame.getHash();
+        for(iteration=0; iteration<numIterations; iteration++) {
+            LinkedList<QHistory> prevStates = new LinkedList<>();
 
-            int action = selectAction(currentState);
-            double reward = qGame.updateGame(action);
-            prevStates.add(new QHistory(currentState, action));
+            while (!qGame.isFinished()) {
+                String currentState = qGame.getHash();
+                int action = selectAction(currentState);
+                double reward = qGame.updateGame(action);
+                String nextState = qGame.getHash();
 
-            if(prevStates.size() > queueSize) prevStates.pop();
+                prevStates.add(new QHistory(currentState, nextState, action, reward));
+                if (prevStates.size() > queueSize) prevStates.pop();
 
-            String nextState = qGame.getHash();
-            double oldVal = Q.get(currentState)[action];
-            double qMax = Q.containsKey(nextState) ? getMaxVal(Q.get(nextState)) : 0;
-            double delta = reward + gamma * qMax - oldVal;
-            double eligibilityDecay = 1;
+                double qMax = Q.containsKey(nextState) ? getMaxVal(Q.get(nextState)) : 0;
+                double delta = reward + gamma * qMax - Q.get(currentState)[action];
 
-            for(int i=prevStates.size()-1; i>=0; i--) {
-                QHistory oldState = prevStates.get(i);
-                oldVal = Q.get(oldState.getState())[oldState.getAction()];
-                Q.get(oldState.getState())[oldState.getAction()] = oldVal + alpha * delta * eligibilityDecay;;
-                eligibilityDecay *= 0.8;
+                updateQ(prevStates, delta);
             }
+
+            if (iteration % 100 == 0) System.out.println("Iteration: " + iteration + " | " + qGame);
+            if (iteration>=4900) results[iteration-4900] = ((Board) qGame).getNumberOfMoves();
+
+            qGame.reset();
         }
 
-        if(iteration %100 == 0) System.out.println("Iteration: " + iteration + " | " + qGame);
-        qGame.reset();
+        System.out.println("Avg: " + Arrays.stream(results).average().getAsDouble() + " | Min: " + Arrays.stream(results).min().getAsInt());
+    }
+
+
+    private void updateQ(LinkedList<QHistory> previousStates, double delta) {
+        double eligibilityDecay  = 1;
+
+        for (int i = previousStates.size() - 1; i >= 0; i--) {
+            double reward = previousStates.get(i).getReward();
+            String nextKey = previousStates.get(i).getNextState();
+            int index = previousStates.get(i).getAction();
+            Double[] actions = Q.get(previousStates.get(i).getState());
+
+            double oldValue = actions[index];
+            double qMax = Q.containsKey(nextKey) ? getMaxVal(Q.get(nextKey)) : 0;
+            double newValue = oldValue + alpha * (reward + gamma * qMax - oldValue);
+            //double newValue = oldValue + alpha*delta*eligibilityDecay;
+            actions[index] = newValue;
+            eligibilityDecay *= lambda;
+        }
     }
 
 
@@ -60,26 +82,31 @@ public class QLearner {
             return (int) (Math.random()*numActions);
         }
 
-        int maxPos = 0;
-        for(int i=1; i<actions.length; i++) {
-            if(actions[maxPos] < actions[i]) maxPos = i;
-        }
-
-        if(actions[maxPos] == 0 || Math.random() < Math.exp(-iteration /500)) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
+        int maxPos = getBestAction(state);
+        if(Math.random() < Math.exp(-1 -iteration /probFactor)) return (maxPos + (int) (Math.random() * (numActions-1))) % numActions;
         else return maxPos;
     }
 
 
-    public int getAction(String state) {
-        Double[] actions = Q.get(state);
+    public int getBestAction(String key){
+        Double[] actions = Q.get(key);
         if(actions == null) return 4;
 
-        int maxPos = 0;
-        for(int i=1; i<actions.length; i++) {
-            if(actions[maxPos] < actions[i]) maxPos = i;
+        ArrayList<Integer> best = new ArrayList<>();
+        double highest = Double.NEGATIVE_INFINITY;
+
+        for(int i = 0; i < numActions; i++){
+            if(actions[i] > highest){
+                highest = actions[i];
+                best.clear();
+                best.add(i);
+            } else if(actions[i] == highest){
+                best.add(i);
+            }
         }
 
-        return maxPos;
+        if(best.size() == 1) return best.get(0);
+        else return best.get((int) (Math.random()*best.size()));
     }
 
     private static double getMaxVal(Double[] arr) {
