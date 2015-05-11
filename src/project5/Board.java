@@ -10,36 +10,36 @@ public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
     private static final double POISON_REWARD = -100, FINISH_REWARD = 5000;
 
-    private int foodTotal, foodEaten, poisonEaten, moves, startX, startY;
-    private EmptyCell[][] original, board;
-    private Agent agent;
+    private int foodTotal, foodEaten, poisonEaten, moves, startX, startY, agentX, agentY;
+    private Cells[][] original, board;
 
 
     public Board(ArrayList<Integer> values) {
         BOARD_DIMENSION_X = values.get(0);
         BOARD_DIMENSION_Y = values.get(1);
 
-        original = new EmptyCell[BOARD_DIMENSION_X][BOARD_DIMENSION_Y];
+        original = new Cells[BOARD_DIMENSION_X][BOARD_DIMENSION_Y];
         for(int i=0; i<original.length; i++) {
             for(int j=0; j<original[i].length; j++) {
                 switch (values.get(5+i + j*BOARD_DIMENSION_X)) {
                     case -2:
-                        original[i][j] = new EmptyCell(true);
-                        agent = new Agent(i, j);
+                        original[i][j] = Cells.START;
                         startX = i;
                         startY = j;
+                        agentX = i;
+                        agentY = j;
                         break;
 
                     case -1:
-                        original[i][j] = new Poison();
+                        original[i][j] = Cells.POISON;
                         break;
 
                     case 0:
-                        original[i][j] = new EmptyCell();
+                        original[i][j] = Cells.EMPTY;
                         break;
 
                     default:
-                        original[i][j] = new Food();
+                        original[i][j] = Cells.FOOD;
                         foodTotal++;
                         break;
                 }
@@ -62,44 +62,46 @@ public class Board implements QGame {
         return moves;
     }
 
-    public EmptyCell getCell(int x, int y) {
-        if((x+BOARD_DIMENSION_X) % BOARD_DIMENSION_X == agent.getX() && ((y+BOARD_DIMENSION_Y) % BOARD_DIMENSION_Y) == agent.getY()) return agent;
+    public Cells getCell(int x, int y) {
+        if((x+BOARD_DIMENSION_X) % BOARD_DIMENSION_X == agentX && ((y+BOARD_DIMENSION_Y) % BOARD_DIMENSION_Y) == agentY) return Cells.AGENT;
         return board[(x+BOARD_DIMENSION_X) % BOARD_DIMENSION_X][(y+BOARD_DIMENSION_Y) % BOARD_DIMENSION_Y];
     }
 
     @Override
     public void reset() {
-        board = new EmptyCell[original.length][];
+        board = new Cells[original.length][];
 
         for(int i=0; i<board.length; i++)
             board[i] = Arrays.copyOf(original[i], original[i].length);
 
-        agent.setPosition(startX, startY);
         poisonEaten = 0;
         foodEaten = 0;
         moves = 0;
+        agentX = startX;
+        agentY = startY;
     }
 
     @Override
     public boolean isFinished() {
-        return foodTotal == foodEaten && board[agent.getX()][agent.getY()].isStart();
+        return (foodTotal == foodEaten && board[agentX][agentY] == Cells.START) || moves > getStepLimit();
     }
 
     @Override
     public double updateGame(int action) {
         Direction direction = Direction.values()[action];
-        int newX = (agent.getX() + direction.getVectorX() + BOARD_DIMENSION_X) % BOARD_DIMENSION_X;
-        int newY = (agent.getY() + direction.getVectorY() + BOARD_DIMENSION_Y) % BOARD_DIMENSION_Y;
+        int newX = (agentX + direction.getVectorX() + BOARD_DIMENSION_X) % BOARD_DIMENSION_X;
+        int newY = (agentY + direction.getVectorY() + BOARD_DIMENSION_Y) % BOARD_DIMENSION_Y;
 
         moves++;
-        EmptyCell targetCell = getCell(newX, newY);
-        agent.setPosition(newX, newY);
-        if(targetCell instanceof Food) {
-            board[newX][newY] = new EmptyCell();
+        Cells targetCell = getCell(newX, newY);
+        agentX = newX;
+        agentY = newY;
+        if(targetCell == Cells.FOOD) {
+            board[newX][newY] = Cells.EMPTY;
             foodEaten++;
             return Math.abs(newX-startX) + Math.abs(newY-startY);
-        } else if(targetCell instanceof Poison) {
-            board[newX][newY] = new EmptyCell();
+        } else if(targetCell == Cells.POISON) {
+            board[newX][newY] = Cells.EMPTY;
             poisonEaten++;
             return POISON_REWARD;
         } else  if(isFinished()) {
@@ -112,12 +114,11 @@ public class Board implements QGame {
 
         for (int i=0; i<BOARD_DIMENSION_X; i++) {
             for (int j=0; j<BOARD_DIMENSION_Y; j++) {
-                EmptyCell targetCell = board[i][j];
-                if (targetCell instanceof Food) sb.append((char) i).append((char) j);
+                if (board[i][j] == Cells.FOOD) sb.append((char) i).append((char) j);
             }
         }
 
-        if(withAgent) return sb.append(agent.getX()).append(agent.getY()).toString();
+        if(withAgent) return sb.append(agentX).append(agentY).toString();
         else return sb.toString();
     }
 
@@ -132,6 +133,6 @@ public class Board implements QGame {
 
 
     public int getStepLimit() {
-        return BOARD_DIMENSION_X * BOARD_DIMENSION_Y * 8;
+        return BOARD_DIMENSION_X * BOARD_DIMENSION_Y * 4;
     }
 }
