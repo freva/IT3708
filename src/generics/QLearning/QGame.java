@@ -1,13 +1,11 @@
 package generics.QLearning;
 
 public interface QGame {
-    public void reset();
+    void reset();
 
-    public boolean isFinished();
+    boolean isFinished();
 
-    public double updateGame(int action);
+    double updateGame(int action);
 
-    public String getHash();
-
-    public int getStepLimit();
+    String getHash();
 }
