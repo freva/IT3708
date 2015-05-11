@@ -8,10 +8,11 @@ import java.util.Arrays;
 
 public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
-    private static final double POISON_REWARD = -100, FINISH_REWARD = 5000;
+    private static final double POISON_REWARD = -100, EMPTY_REWARD = -0.5, FOOD_REWARD = 10, FINISH_REWARD = 100;
 
     private int foodTotal, foodEaten, poisonEaten, moves, startX, startY, agentX, agentY;
     private Cells[][] original, board;
+    private String hash;
 
 
     public Board(ArrayList<Integer> values) {
@@ -79,6 +80,7 @@ public class Board implements QGame {
         moves = 0;
         agentX = startX;
         agentY = startY;
+        updateCacheHash();
     }
 
     @Override
@@ -99,31 +101,34 @@ public class Board implements QGame {
         if(targetCell == Cells.FOOD) {
             board[newX][newY] = Cells.EMPTY;
             foodEaten++;
-            return Math.abs(newX-startX) + Math.abs(newY-startY);
+            updateCacheHash();
+            return FOOD_REWARD;
         } else if(targetCell == Cells.POISON) {
             board[newX][newY] = Cells.EMPTY;
             poisonEaten++;
             return POISON_REWARD;
-        } else  if(isFinished()) {
-            return FINISH_REWARD/moves;
-        } else return 0;
+        } else if(isFinished()) return FINISH_REWARD;
+        else return EMPTY_REWARD;
     }
 
-    public String getHash(boolean withAgent) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i=0; i<BOARD_DIMENSION_X; i++) {
-            for (int j=0; j<BOARD_DIMENSION_Y; j++) {
-                if (board[i][j] == Cells.FOOD) sb.append((char) i).append((char) j);
-            }
-        }
-
-        if(withAgent) return sb.append(agentX).append(agentY).toString();
-        else return sb.toString();
+    public String getHash(int x, int y) {
+        return hash + x + y;
     }
 
     public String getHash() {
-        return getHash(true);
+        return getHash(agentX, agentY);
+    }
+
+
+    private void updateCacheHash() {
+        hash = "";
+        for (int i = 0; i < BOARD_DIMENSION_X; i++) {
+            for (int j = 0; j < BOARD_DIMENSION_Y; j++) {
+                if (board[i][j] == Cells.FOOD) {
+                    hash += i + j;
+                }
+            }
+        }
     }
 
 
@@ -132,7 +137,7 @@ public class Board implements QGame {
     }
 
 
-    public int getStepLimit() {
+    private int getStepLimit() {
         return BOARD_DIMENSION_X * BOARD_DIMENSION_Y * 4;
     }
 }
