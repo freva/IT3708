@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
-    private static final double POISON_REWARD = -100, EMPTY_REWARD = -0.5, FOOD_REWARD = 10, FINISH_REWARD = 100;
+    private static final double POISON_REWARD = -100, EMPTY_REWARD = -0.05, FOOD_REWARD = 10, FINISH_REWARD = 100;
 
     private int foodTotal, foodEaten, poisonEaten, moves, startX, startY, agentX, agentY;
     private Cells[][] original, board;
