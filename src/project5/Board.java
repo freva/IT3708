@@ -8,11 +8,11 @@ import java.util.Arrays;
 
 public class Board implements QGame {
     public static int BOARD_DIMENSION_X, BOARD_DIMENSION_Y;
-    private static final double POISON_REWARD = -100, EMPTY_REWARD = -0.05, FOOD_REWARD = 10, FINISH_REWARD = 100;
+    private static final double POISON_REWARD = -1000, EMPTY_REWARD = -0.01, FOOD_REWARD = 10, FINISH_REWARD = 100;
 
     private int foodTotal, foodEaten, poisonEaten, moves, startX, startY, agentX, agentY;
     private Cells[][] original, board;
-    private String hash;
+    private int hash;
 
 
     public Board(ArrayList<Integer> values) {
@@ -111,21 +111,23 @@ public class Board implements QGame {
         else return EMPTY_REWARD;
     }
 
-    public String getHash(int x, int y) {
-        return hash + x + y;
+    public int getHash(int x, int y) {
+        return hash ^ (x << 16 | y);
     }
 
-    public String getHash() {
+    public int getHash() {
         return getHash(agentX, agentY);
     }
 
 
     private void updateCacheHash() {
-        hash = "";
-        for (int i = 0; i < BOARD_DIMENSION_X; i++) {
-            for (int j = 0; j < BOARD_DIMENSION_Y; j++) {
+        hash = 0;
+
+        for (int i=0, count=0; i<BOARD_DIMENSION_X; i++) {
+            for (int j=0; j<BOARD_DIMENSION_Y; j++) {
                 if (board[i][j] == Cells.FOOD) {
-                    hash += i + j;
+                    hash ^= (i << (count + 6)%26) | (j << count%26);
+                    count += 12;
                 }
             }
         }
