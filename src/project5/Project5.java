@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Project5 {
-    public static final int CELL_SIZE = 40;
+    public static final int CELL_SIZE = 30;
 
     public static void main(String[] args) {
-        args = new String[]{"5"};
+        args = new String[]{"3"};
 
         new Flatland(parseInput(args[0])).runSimulation();
     }
