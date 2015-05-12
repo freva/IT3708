@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class QLearner {
-    private static final int numActions = 4, queueSize = 2;
-    private HashMap<String, Double[]> Q = new HashMap<>();
+    private static final int numActions = 4, queueSize = 10;
+    private HashMap<Integer, Double[]> Q = new HashMap<>();
     private double alpha, gamma, lambda, probFactor;
     private QGame qGame;
     private int iteration;
@@ -30,10 +30,10 @@ public class QLearner {
             LinkedList<QHistory> prevStates = new LinkedList<>();
 
             while (!qGame.isFinished()) {
-                String currentState = qGame.getHash();
+                int currentState = qGame.getHash();
                 int action = selectAction(currentState);
                 double reward = qGame.updateGame(action);
-                String nextState = qGame.getHash();
+                int nextState = qGame.getHash();
 
                 prevStates.add(new QHistory(currentState, nextState, action, reward));
                 if (prevStates.size() > queueSize) prevStates.pop();
@@ -57,13 +57,13 @@ public class QLearner {
 
         for (int i = previousStates.size() - 1; i >= 0; i--) {
             double reward = previousStates.get(i).getReward();
-            String nextKey = previousStates.get(i).getNextState();
+            int nextKey = previousStates.get(i).getNextState();
             int index = previousStates.get(i).getAction();
             Double[] actions = Q.get(previousStates.get(i).getState());
 
             double oldValue = actions[index];
             double qMax = Q.containsKey(nextKey) ? getMaxVal(Q.get(nextKey)) : 0;
-            double newValue = oldValue + alpha * (reward + gamma * qMax - oldValue);
+            double newValue = oldValue + alpha * (reward + gamma * qMax - oldValue) * eligibilityDecay;
             //double newValue = oldValue + alpha*delta*eligibilityDecay;
             actions[index] = newValue;
             eligibilityDecay *= lambda;
@@ -71,7 +71,7 @@ public class QLearner {
     }
 
 
-    public int selectAction(String state) {
+    public int selectAction(int state) {
         Double[] actions = Q.get(state);
         if(actions == null) {
             Double[] array = new Double[numActions];
@@ -86,7 +86,7 @@ public class QLearner {
     }
 
 
-    public int getBestAction(String key){
+    public int getBestAction(int key){
         Double[] actions = Q.get(key);
         if(actions == null) return 4;
 

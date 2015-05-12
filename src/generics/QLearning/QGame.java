@@ -7,5 +7,5 @@ public interface QGame {
 
     double updateGame(int action);
 
-    String getHash();
+    int getHash();
 }

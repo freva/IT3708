@@ -2,11 +2,11 @@ package generics.QLearning;
 
 
 class QHistory {
-    private String state, nextState;
+    private int state, nextState;
     private int action;
     private double reward;
 
-    QHistory(String state, String nextState, int action, double reward) {
+    QHistory(int state, int nextState, int action, double reward) {
         this.state = state;
         this.nextState = nextState;
         this.action = action;
@@ -14,11 +14,11 @@ class QHistory {
     }
 
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 
-    public String getNextState() {
+    public int getNextState() {
         return nextState;
     }
 
