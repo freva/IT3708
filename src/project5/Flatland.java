@@ -23,10 +23,8 @@ public class Flatland extends JPanel {
 
 
     public void runSimulation() {
-        long startTime = System.currentTimeMillis();
-        qLearner = new QLearner(board, 0.2, 0.9, 0.7);
+        qLearner = new QLearner(board, 0.05, 0.77, 0.65);
         qLearner.train(10000);
-        System.out.println(System.currentTimeMillis() - startTime);
 
         simulateBestResult();
     }
