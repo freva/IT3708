@@ -38,10 +38,7 @@ public class QLearner {
                 prevStates.add(new QHistory(currentState, nextState, action, reward));
                 if (prevStates.size() > queueSize) prevStates.pop();
 
-                double qMax = Q.containsKey(nextState) ? getMaxVal(Q.get(nextState)) : 0;
-                double delta = reward + gamma * qMax - Q.get(currentState)[action];
-
-                updateQ(prevStates, delta);
+                updateQ(prevStates);
             }
 
             results[iteration%100] = ((Board) qGame).getNumberOfMoves();
@@ -52,7 +49,7 @@ public class QLearner {
     }
 
 
-    private void updateQ(LinkedList<QHistory> previousStates, double delta) {
+    private void updateQ(LinkedList<QHistory> previousStates) {
         double eligibilityDecay = 1;
 
         for (int i = previousStates.size() - 1; i >= 0; i--) {
@@ -63,9 +60,8 @@ public class QLearner {
 
             double oldValue = actions[index];
             double qMax = Q.containsKey(nextKey) ? getMaxVal(Q.get(nextKey)) : 0;
-            double newValue = oldValue + alpha * (reward + gamma * qMax - oldValue) * eligibilityDecay;
-            //double newValue = oldValue + alpha*delta*eligibilityDecay;
-            actions[index] = newValue;
+
+            actions[index] = oldValue + alpha * (reward + gamma * qMax - oldValue) * eligibilityDecay;
             eligibilityDecay *= lambda;
         }
     }
