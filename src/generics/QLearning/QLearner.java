@@ -2,10 +2,10 @@ package generics.QLearning;
 
 import project5.Board;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+
 
 public class QLearner {
     private static final int numActions = 4, queueSize = 10;
@@ -24,7 +24,7 @@ public class QLearner {
 
 
     public void train(int numIterations) {
-        probFactor = numIterations/10.0;
+        probFactor = numIterations/6.0;
 
         for(iteration=0; iteration<numIterations; iteration++) {
             LinkedList<QHistory> prevStates = new LinkedList<>();
@@ -86,21 +86,16 @@ public class QLearner {
         Double[] actions = Q.get(key);
         if(actions == null) return 4;
 
-        ArrayList<Integer> best = new ArrayList<>();
-        double highest = Double.NEGATIVE_INFINITY;
-
-        for(int i = 0; i < numActions; i++){
-            if(actions[i] > highest){
-                highest = actions[i];
-                best.clear();
-                best.add(i);
-            } else if(actions[i] == highest){
-                best.add(i);
+        int index = 0;
+        for(int i = 1; i < numActions; i++){
+            if(actions[i] > actions[index]){
+                index = i;
+            } else if(actions[i].equals(actions[index])){
+                if(Math.random() < 0.5) index = i;
             }
         }
 
-        if(best.size() == 1) return best.get(0);
-        else return best.get((int) (Math.random()*best.size()));
+        return index;
     }
 
     private static double getMaxVal(Double[] arr) {
