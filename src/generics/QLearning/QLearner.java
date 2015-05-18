@@ -52,11 +52,11 @@ public class QLearner {
     private void updateQ(LinkedList<QHistory> previousStates) {
         double eligibilityDecay = 1;
 
-        for (int i = previousStates.size() - 1; i >= 0; i--) {
-            double reward = previousStates.get(i).getReward();
-            int nextKey = previousStates.get(i).getNextState();
-            int index = previousStates.get(i).getAction();
-            Double[] actions = Q.get(previousStates.get(i).getState());
+        for (QHistory state: previousStates) {
+            double reward = state.getReward();
+            int nextKey = state.getNextState();
+            int index = state.getAction();
+            Double[] actions = Q.get(state.getState());
 
             double oldValue = actions[index];
             double qMax = Q.containsKey(nextKey) ? getMaxVal(Q.get(nextKey)) : 0;

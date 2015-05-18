@@ -27,8 +27,6 @@ public class Board implements QGame {
                         original[i][j] = Cells.START;
                         startX = i;
                         startY = j;
-                        agentX = i;
-                        agentY = j;
                         break;
 
                     case -1:
