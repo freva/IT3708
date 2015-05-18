@@ -12,7 +12,7 @@ public class Project5 {
     public static final int CELL_SIZE = 30;
 
     public static void main(String[] args) {
-        new Flatland(parseInput(args[0])).runSimulation();
+        new Flatland(parseInput(args[0])).runSimulation(Integer.parseInt(args[1]));
     }
 
 

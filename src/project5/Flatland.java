@@ -25,9 +25,9 @@ public class Flatland extends JPanel implements ChangeListener {
     }
 
 
-    public void runSimulation() {
+    public void runSimulation(int numIter) {
         qLearner = new QLearner(board, 0.05, 0.77, 0.65);
-        qLearner.train(10000);
+        qLearner.train(numIter);
 
         simulateBestResult();
     }
